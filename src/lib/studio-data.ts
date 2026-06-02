@@ -687,7 +687,7 @@ const publicStaffNames: Record<number, string> = {
   10: "Surge",
   11: "Yoyo",
   13: "Caitlin",
-  14: "Moxie Mani",
+  14: "Nani",
   15: "Anahi",
   16: "Zaylin",
   17: "Piper",

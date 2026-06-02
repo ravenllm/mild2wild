@@ -130,14 +130,14 @@ describe("Mild 2 Wild service and staff rules", () => {
     expect(surge?.calendarColor).toBe("#E23B16");
   });
 
-  it("keeps team member 14 on its original public profile", () => {
-    const moxie = getStaffBySlug("team-member-14");
+  it("maps Nani to team member 14 as a nail artist", () => {
+    const nani = getStaffBySlug("team-member-14");
 
-    expect(moxie?.name).toBe("Moxie Mani");
-    expect(moxie?.title).toBe("Nail Artist");
-    expect(moxie?.serviceCategorySlugs).toEqual(["nails"]);
-    expect(moxie?.photoUrl).toBe("/staff/team-member-14.jpg");
-    expect(moxie?.portfolioImages).toBeUndefined();
+    expect(nani?.name).toBe("Nani");
+    expect(nani?.title).toBe("Nail Artist");
+    expect(nani?.serviceCategorySlugs).toEqual(["nails"]);
+    expect(nani?.photoUrl).toBe("/staff/team-member-14.jpg");
+    expect(nani?.portfolioImages).toBeUndefined();
   });
 
   it("maps Piper to team member 17 as a nail artist", () => {
