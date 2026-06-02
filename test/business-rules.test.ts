@@ -28,7 +28,7 @@ describe("Mild 2 Wild service and staff rules", () => {
           staff.bio &&
           staff.photoUrl &&
           staff.socialLinks.length > 0 &&
-          (staff.serviceCategorySlugs.length > 0 || staff.isMascot || staff.title === "Role coming soon"),
+          (staff.serviceCategorySlugs.length > 0 || staff.isMascot || staff.title === "Team Member"),
       ),
     ).toBe(true);
   });
@@ -151,15 +151,15 @@ describe("Mild 2 Wild service and staff rules", () => {
     expect(mari?.calendarColor).toBe("#00C8D8");
   });
 
-  it("adds Tim as a pending-role team member without making him bookable yet", () => {
+  it("adds Tim as a non-bookable team member without placeholder public copy", () => {
     const tim = getStaffBySlug("team-member-20");
 
     expect(tim?.name).toBe("Tim");
-    expect(tim?.title).toBe("Role coming soon");
+    expect(tim?.title).toBe("Team Member");
     expect(tim?.serviceCategorySlugs).toEqual([]);
     expect(tim?.serviceSlugs).toEqual([]);
     expect(tim?.photoUrl).toBe("/staff/team-member-20.jpg");
-    expect(tim?.bio).toContain("role and service details will be added");
+    expect(tim?.bio).toContain("contact the studio");
   });
 
   it("uses the received client menu prices for non-tattoo service categories", () => {
@@ -173,7 +173,7 @@ describe("Mild 2 Wild service and staff rules", () => {
     expect(bySlug.get("volume-lash-set")?.priceLabel).toBe("$100");
     expect(bySlug.get("sixty-minute-facial")?.priceLabel).toBe("$60.00");
     expect(bySlug.get("full-leg-wax")?.priceLabel).toBe("$40.00");
-    expect(bySlug.get("tattoo-consult")?.priceLabel).toBe("Menu pending");
+    expect(bySlug.get("tattoo-consult")?.priceLabel).toBe("Consult first");
   });
 
   it("models owner/admin access differently from individual employee calendar access", () => {

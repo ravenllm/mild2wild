@@ -413,16 +413,16 @@ export const services: StudioService[] = [
     name: "Tattoo Consultation",
     categorySlug: "tattoo",
     durationMinutes: 30,
-    priceLabel: "Menu pending",
-    description: "Tattoo menu is pending; use this option for consultation-first requests while final pricing is collected.",
+    priceLabel: "Consult first",
+    description: "Start with a tattoo consultation so the artist can review the idea, placement, timing, and pricing with you.",
   },
   {
     slug: "flash-tattoo",
     name: "Flash Tattoo",
     categorySlug: "tattoo",
     durationMinutes: 120,
-    priceLabel: "Menu pending",
-    description: "Tattoo menu is pending; staff can confirm flash availability, sizing, placement, and pricing.",
+    priceLabel: "Quoted by artist",
+    description: "Flash tattoo requests are reviewed by the artist so availability, sizing, placement, and pricing are clear before the appointment.",
   },
   {
     slug: "thirty-minute-facial",
@@ -719,10 +719,10 @@ const sharvelleBio =
   "Sharvelle is part of the Mild 2 Wild hair team, helping guests plan cuts, color, styling, and transformation appointments that fit their look and routine.";
 
 const mariBio =
-  "Mari is a tattoo artist at Mild 2 Wild. Her tattoo menu and full profile details are still being collected, but guests can use her profile for consultation-first tattoo requests.";
+  "Mari is a tattoo artist at Mild 2 Wild. Guests can use her profile for consultation-first tattoo requests, flash questions, and appointment planning.";
 
 const timBio =
-  "Tim is part of the Mild 2 Wild team. His role and service details will be added once they are confirmed.";
+  "Tim is part of the Mild 2 Wild team. Guests can contact the studio for current details about his availability and services.";
 
 const liaBio =
   "Hi! My name is Lia and I have been a licensed nail tech for almost 2 years. I love doing animal print, alternative, and Y2K designs. I’m a huge Hello Kitty lover and I love anime!";
@@ -881,7 +881,7 @@ export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug,
     name: isMascot
       ? "Schwebels"
       : (publicStaffNames[index] ?? (categorySlug ? `${categoryTitles[categorySlug]} ${paddedIndex}` : `Team Member ${paddedIndex}`)),
-    title: isMascot ? "Mascot" : isPendingRole ? "Role coming soon" : categoryTitles[categorySlug as ServiceCategorySlug],
+    title: isMascot ? "Mascot" : isPendingRole ? "Team Member" : categoryTitles[categorySlug as ServiceCategorySlug],
     bio: isMascot
       ? mascotBio
       : isLia
@@ -900,7 +900,7 @@ export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug,
                     ? timBio
                     : categorySlug
                       ? categoryBio[categorySlug]
-                      : "This team member profile is ready for Caitlin to fill in once the role and service details are confirmed.",
+                      : "Contact the studio for current availability and service details for this team member.",
     photoUrl: `/staff/team-member-${paddedIndex}.jpg`,
     serviceCategorySlugs: categorySlug ? [categorySlug] : [],
     serviceSlugs: categorySlug ? serviceSlugsByCategory[categorySlug] : [],
@@ -909,10 +909,7 @@ export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug,
           { label: "Friendship APL", href: "https://friendshipapl.org" },
           { label: "View portfolio", href: "#portfolio" },
         ]
-      : [
-          { label: "Instagram coming soon", href: "#" },
-          { label: "View portfolio", href: "#portfolio" },
-        ],
+      : [{ label: "View portfolio", href: "#portfolio" }],
     gallery: isMascot
       ? ["Shop dog mascot", "Schwebels story", "Tour-page cameo"]
       : isLia
@@ -924,12 +921,12 @@ export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug,
         : isSurge
           ? ["Realism", "Fine details", "Personal meaningful pieces"]
         : isMari
-          ? ["Tattoo artist", "Consultation-first requests", "Portfolio details pending"]
+          ? ["Tattoo artist", "Consultation-first requests", "Flash and custom ideas"]
         : isTim
-          ? ["Profile added", "Role to be confirmed", "Service details pending"]
+          ? ["Mild 2 Wild team", "Studio availability", "Service questions"]
           : categorySlug
             ? categoryGallery[categorySlug]
-            : ["Profile added", "Role to be confirmed", "Service details pending"],
+            : ["Mild 2 Wild team", "Studio availability", "Service questions"],
     portfolioImages: isLia ? liaPortfolioImages : isSerenity ? serenityPortfolioImages : undefined,
     calendarColor: isJuny
       ? "#FF3131"

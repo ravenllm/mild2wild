@@ -58,7 +58,7 @@ export default async function StaffProfilePage({ params }: { params: Promise<{ s
   const innerPanelStyle = getProfileInnerPanelStyle(portraitPalette);
   const bioIntro = staff.bio.match(/^(.+?[.!?])\s+/)?.[1] ?? "";
   const bioBody = bioIntro ? staff.bio.slice(bioIntro.length).trim() : staff.bio;
-  const portfolioTheme = getPortfolioTheme(isMascot ? "mascot" : (staff.serviceCategorySlugs[0] ?? "nails"), portraitPalette, theme.portfolioStyle.id);
+  const portfolioTheme = getPortfolioTheme(isMascot ? "mascot" : (staff.serviceCategorySlugs[0] ?? "team"), portraitPalette, theme.portfolioStyle.id);
 
   return (
     <PageShell>
@@ -132,8 +132,7 @@ export default async function StaffProfilePage({ params }: { params: Promise<{ s
           <div className="relative mt-6 max-w-full overflow-hidden rounded-[2rem] border-[3px] p-5 md:max-w-3xl" style={getBioPanelStyle(bioPalette)}>
             <BioPanelDecoration decorId={theme.decor.id} palette={bioPalette} />
             <p className="relative break-words text-[1.06rem] font-semibold leading-8 tracking-[0.01em] text-[#4d4543] md:text-lg">
-              {bioIntro ? <span className="marker-script mr-1 text-[1.35em] font-black leading-none" style={{ color: bioPalette.deep }}>{bioIntro}</span> : null}
-              {bioIntro ? " " : null}
+              {bioIntro ? <span className="marker-script mr-1 text-[1.35em] font-black leading-none" style={{ color: bioPalette.deep }}>{`${bioIntro} `}</span> : null}
               {bioBody}
             </p>
           </div>
@@ -174,7 +173,7 @@ export default async function StaffProfilePage({ params }: { params: Promise<{ s
                     );
                   }) : (
                     <div className="rounded-2xl border-[2px] p-4 text-[#4d4543]" style={innerPanelStyle}>
-                      Service details will be added once this role is confirmed.
+                      Contact the studio for current service details for this team member.
                     </div>
                   )}
                 </div>
@@ -227,13 +226,10 @@ export default async function StaffProfilePage({ params }: { params: Promise<{ s
             </div>
           ) : (
             <div className="mt-6 rounded-[1.8rem] border-[3px] p-6" style={portfolioTheme.emptyStyle}>
-              <p className="brand-display text-2xl font-black uppercase text-black">Portfolio ready for uploads</p>
+              <p className="brand-display text-2xl font-black uppercase text-black">Portfolio by request</p>
               <p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-[#5f5650]">
-                Caitlin can use the admin profile editor to add photos, update bios, and tune profile designs whenever new work examples are ready.
+                Ask the studio about recent work examples, style fit, and appointment recommendations for this team member.
               </p>
-              <Link href={`/login?staff=${staff.slug}&next=${encodeURIComponent(`/dashboard/staff/${staff.slug}/edit`)}`} className="mt-4 inline-flex rounded-full border-[3px] px-5 py-3 text-xs font-black uppercase tracking-[0.16em] text-black transition hover:-translate-y-0.5" style={{ background: portfolioTheme.accent, borderColor: portfolioTheme.ink, boxShadow: `4px 5px 0 ${portfolioTheme.shadow}` }}>
-                Admin: edit portfolio
-              </Link>
             </div>
           )}
         </section>
@@ -550,7 +546,15 @@ function getPortfolioCopy(categorySlug: string) {
     return {
       eyebrow: "Shop dog snapshots",
       heading: "Dog portfolio",
-      description: (name: string) => `A sweet little gallery for Caitlin to upload ${name}'s shop-dog photos, mascot moments, and Mild 2 Wild cameos.`,
+      description: (name: string) => `A sweet little gallery for ${name}'s shop-dog photos, mascot moments, and Mild 2 Wild cameos.`,
+    };
+  }
+
+  if (categorySlug === "team") {
+    return {
+      eyebrow: "Recent work",
+      heading: "Team portfolio",
+      description: (name: string) => `Ask the studio about ${name}'s recent work, style fit, and service availability.`,
     };
   }
 
@@ -859,7 +863,7 @@ function FlashDagger({ className, palette, rotate }: { className: string; palett
 function formatSocialLinkText(label: string) {
   const normalized = label.toLowerCase();
   if (normalized === "instagram" || normalized === "tiktok") return "";
-  if (normalized === "instagram coming soon" || normalized === "tiktok coming soon") return "Coming soon";
+  if (normalized.includes("soon")) return "Ask studio";
   return label;
 }
 

@@ -93,7 +93,7 @@ export function SiteHeader() {
         </div>
       </nav>
       <div className="border-t-2 border-black/15 md:hidden">
-        <div className="mx-auto flex max-w-7xl gap-2 overflow-x-auto overscroll-x-contain px-3 py-3 text-[0.68rem] font-black uppercase tracking-[0.12em] text-black/75 sm:gap-3 sm:px-5 sm:text-xs sm:tracking-[0.16em]">
+        <div className="mx-auto flex max-w-7xl flex-wrap justify-center gap-2 px-3 py-3 text-[0.68rem] font-black uppercase tracking-[0.12em] text-black/75 sm:gap-3 sm:px-5 sm:text-xs sm:tracking-[0.16em]">
           {mobileLinks.map(([label, href]) => (
             <Link key={href} href={href} className={`shrink-0 rounded-full border-2 border-black px-3 py-2 shadow-[3px_4px_0_#17130f] transition hover:bg-pink-200 hover:text-black ${label === "Login" ? "bg-lime-100 text-black" : "bg-white/70"}`}>
               {label}

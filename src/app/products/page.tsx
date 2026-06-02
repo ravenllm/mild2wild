@@ -36,7 +36,7 @@ const productCards = [
   {
     title: "Gift Cards",
     copy: "A flexible way to gift tattoos, nails, hair, spa services, or retail favorites.",
-    action: "Coming soon",
+    action: "Ask in studio",
   },
 ];
 
