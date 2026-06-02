@@ -16,8 +16,9 @@
 # local runtime edits/fallback stores
 /.data/
 
-# client-shareable generated files kept local
+# client-shareable/generated QA files kept local
 /client-share/
+/dogfood-output/
 
 # next.js
 /.next/

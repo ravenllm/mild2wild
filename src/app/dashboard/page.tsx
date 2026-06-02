@@ -334,7 +334,7 @@ export default async function DashboardPage() {
   const primaryCalendarLabel = dashboardModel.canManageAllCalendars ? "Open Caitlin's calendar" : "Open my calendar";
   return (
     <PageShell>
-      <div className="fixed inset-x-4 bottom-5 z-50 mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-3 rounded-[2rem] border border-cyan-200/40 bg-black/90 p-3 shadow-2xl shadow-cyan-400/25 backdrop-blur md:bottom-8">
+      <div className="fixed inset-x-4 bottom-5 z-50 mx-auto hidden max-w-3xl flex-wrap items-center justify-center gap-3 rounded-[2rem] border border-cyan-200/40 bg-black/90 p-3 shadow-2xl shadow-cyan-400/25 backdrop-blur md:bottom-8 md:flex">
         <Link href="#calendar-board" className="rounded-full bg-cyan-200 px-5 py-3 text-xs font-black uppercase tracking-[0.16em] text-black transition hover:bg-white sm:text-sm">
           Open all calendars ↓
         </Link>
