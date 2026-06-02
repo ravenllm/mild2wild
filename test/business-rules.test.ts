@@ -33,9 +33,8 @@ describe("Mild 2 Wild service and staff rules", () => {
     ).toBe(true);
   });
 
-  it("sorts illustrated staff photos by the object they are holding and keeps the shop dog as mascot", () => {
-    const slugsFor = (categorySlug: string) =>
-      staffMembers.filter((staff) => staff.serviceCategorySlugs.includes(categorySlug as never)).map((staff) => staff.slug);
+  it("assigns seeded staff to the expected service groups", () => {
+    const slugsFor = (category: string) => staffMembers.filter((staff) => staff.serviceCategorySlugs.includes(category as never)).map((staff) => staff.slug);
 
     expect(slugsFor("nails")).toEqual([
       "team-member-01",
@@ -46,10 +45,11 @@ describe("Mild 2 Wild service and staff rules", () => {
       "team-member-14",
       "team-member-15",
       "team-member-16",
+      "team-member-17",
     ]);
     expect(slugsFor("hair")).toEqual(["team-member-08", "team-member-09", "team-member-11", "team-member-18"]);
     expect(slugsFor("tattoo")).toEqual(["team-member-03", "team-member-07", "team-member-10", "team-member-19"]);
-    expect(slugsFor("aesthetics")).toEqual(["team-member-04", "team-member-17"]);
+    expect(slugsFor("aesthetics")).toEqual(["team-member-04"]);
     const mascot = staffMembers.find((staff) => staff.slug === "team-member-12");
     expect(mascot?.isMascot).toBe(true);
     expect(mascot?.name).toBe("Schwebels");
@@ -57,9 +57,23 @@ describe("Mild 2 Wild service and staff rules", () => {
 
   it("keeps public staff names customer-facing instead of placeholder labels", () => {
     const publicStaff = staffMembers.filter((staff) => !staff.isMascot);
+    const placeholderNames = new Set([
+      "Luna Lacquer",
+      "Raven Ink",
+      "Iris Aura",
+      "Ace Needle",
+      "Sol Strands",
+      "Sunny Shears",
+      "Ruby Rinse",
+      "Cherry Chrome",
+      "Pixie Polish",
+      "Sage Spa",
+    ]);
 
     expect(publicStaff.some((staff) => staff.name === "Caitlin")).toBe(true);
+    expect(publicStaff.some((staff) => staff.name === "Piper")).toBe(true);
     expect(publicStaff.every((staff) => !/^Team Member \d+$/i.test(staff.name))).toBe(true);
+    expect(publicStaff.every((staff) => !placeholderNames.has(staff.name))).toBe(true);
   });
 
   it("maps Caitlin to team member 13 as a nail artist", () => {
@@ -124,6 +138,17 @@ describe("Mild 2 Wild service and staff rules", () => {
     expect(moxie?.serviceCategorySlugs).toEqual(["nails"]);
     expect(moxie?.photoUrl).toBe("/staff/team-member-14.jpg");
     expect(moxie?.portfolioImages).toBeUndefined();
+  });
+
+  it("maps Piper to team member 17 as a nail artist", () => {
+    const piper = getStaffBySlug("team-member-17");
+
+    expect(piper?.name).toBe("Piper");
+    expect(piper?.title).toBe("Nail Artist");
+    expect(piper?.serviceCategorySlugs).toEqual(["nails"]);
+    expect(piper?.serviceSlugs).toContain("gel-full-set");
+    expect(piper?.portfolioImages).toHaveLength(12);
+    expect(piper?.bio).toContain("almond shape nails");
   });
 
   it("maps Sharvelle to team member 18 as a hair stylist", () => {

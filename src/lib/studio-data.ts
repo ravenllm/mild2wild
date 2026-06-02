@@ -675,22 +675,22 @@ const categoryGallery: Record<ServiceCategorySlug, string[]> = {
 };
 
 const publicStaffNames: Record<number, string> = {
-  1: "Luna Lacquer",
+  1: "Annika",
   2: "Juny",
-  3: "Raven Ink",
-  4: "Iris Aura",
+  3: "Seven",
+  4: "Akira",
   5: "Lia",
   6: "Serenity",
-  7: "Ace Needle",
-  8: "Sol Strands",
-  9: "Sunny Shears",
+  7: "Von",
+  8: "Veronica",
+  9: "Laylay",
   10: "Surge",
-  11: "Ruby Rinse",
+  11: "Yoyo",
   13: "Caitlin",
   14: "Moxie Mani",
-  15: "Cherry Chrome",
-  16: "Pixie Polish",
-  17: "Sage Spa",
+  15: "Anahi",
+  16: "Zaylin",
+  17: "Piper",
   18: "Sharvelle",
   19: "Mari",
   20: "Tim",
@@ -726,6 +726,9 @@ const timBio =
 
 const liaBio =
   "Hi! My name is Lia and I have been a licensed nail tech for almost 2 years. I love doing animal print, alternative, and Y2K designs. I’m a huge Hello Kitty lover and I love anime!";
+
+const piperBio =
+  "Hi, I’m Piper. I like anime and Hello Kitty, and I specialize in almond shape nails. I do Gel-X, acrylic, and manicures.";
 
 const liaPortfolioImages: PortfolioImage[] = [
   {
@@ -779,6 +782,15 @@ const liaPortfolioImages: PortfolioImage[] = [
     label: "Black gold alt details",
   },
 ];
+
+const piperPortfolioImages: PortfolioImage[] = Array.from({ length: 12 }, (_, index) => {
+  const displayIndex = String(index + 1).padStart(2, "0");
+  return {
+    src: `/staff/piper/piper-nails-${displayIndex}.jpg`,
+    alt: `Piper nail art portfolio photo ${displayIndex} featuring acrylic, Gel-X, manicure, or almond-shape nail work.`,
+    label: `Piper nail portfolio ${displayIndex}`,
+  };
+});
 
 const serenityPortfolioImages: PortfolioImage[] = [
   {
@@ -855,7 +867,7 @@ const staffSeed: Array<{ index: number; categorySlug?: ServiceCategorySlug; isMa
   { index: 14, categorySlug: "nails" },
   { index: 15, categorySlug: "nails" },
   { index: 16, categorySlug: "nails" },
-  { index: 17, categorySlug: "aesthetics" },
+  { index: 17, categorySlug: "nails" },
   { index: 18, categorySlug: "hair" },
   { index: 19, categorySlug: "tattoo" },
   { index: 20 },
@@ -871,6 +883,7 @@ export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug,
   const isLia = index === 5;
   const isJuny = index === 2;
   const isSerenity = index === 6;
+  const isPiper = index === 17;
   const isSurge = index === 10;
   const isSharvelle = index === 18;
   const isMari = index === 19;
@@ -890,7 +903,9 @@ export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug,
           ? junyBio
           : isSerenity
             ? serenityBio
-            : isSurge
+            : isPiper
+              ? piperBio
+              : isSurge
               ? surgeBio
               : isSharvelle
                 ? sharvelleBio
@@ -918,6 +933,8 @@ export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug,
           ? ["Nail care", "Hair creativity", "Fast-learning beauty skills"]
         : isSerenity
           ? ["Nail art", "Pink and burgundy tones", "Comfortable client experience"]
+        : isPiper
+          ? ["Anime", "Hello Kitty", "Almond shape nails"]
         : isSurge
           ? ["Realism", "Fine details", "Personal meaningful pieces"]
         : isMari
@@ -927,7 +944,7 @@ export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug,
           : categorySlug
             ? categoryGallery[categorySlug]
             : ["Mild 2 Wild team", "Studio availability", "Service questions"],
-    portfolioImages: isLia ? liaPortfolioImages : isSerenity ? serenityPortfolioImages : undefined,
+    portfolioImages: isLia ? liaPortfolioImages : isPiper ? piperPortfolioImages : isSerenity ? serenityPortfolioImages : undefined,
     calendarColor: isJuny
       ? "#FF3131"
       : isSurge
