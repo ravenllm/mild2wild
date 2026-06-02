@@ -3,10 +3,14 @@ import Link from "next/link";
 import { DogTreatIcon } from "@/components/dog-treat-icon";
 import { PageShell, PaintSplat, SectionEyebrow, ServiceCategoryCard, StaffCard } from "@/components/site";
 import { getDogClickerMascot } from "@/lib/dog-clicker";
+import { readStoredStaffMembers } from "@/lib/staff-profile-overrides";
 import { productHighlights, serviceCategories, sortStaffByName, staffMembers } from "@/lib/studio-data";
 
-export default function Home() {
-  const featuredStaff = sortStaffByName(staffMembers.filter((staff) => !staff.isMascot)).slice(0, 6);
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const mergedStaffMembers = await readStoredStaffMembers(staffMembers);
+  const featuredStaff = sortStaffByName(mergedStaffMembers.filter((staff) => !staff.isMascot)).slice(0, 6);
   const mascot = getDogClickerMascot();
 
   return (
