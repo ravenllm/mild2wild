@@ -44,7 +44,7 @@ export default async function Home() {
                   rel="noreferrer"
                   className="rounded-2xl border-[3px] border-black bg-[#ffd3ec] px-4 py-3 text-black shadow-[4px_5px_0_#17130f] transition hover:-translate-y-1 hover:bg-[#ffb8df]"
                 >
-                  Our Instagram
+                  Instagram
                 </a>
                 <a
                   href="https://www.tiktok.com/t/ZP8pwFsvx/"
@@ -52,7 +52,7 @@ export default async function Home() {
                   rel="noreferrer"
                   className="rounded-2xl border-[3px] border-black bg-[#bff7ff] px-4 py-3 text-black shadow-[4px_5px_0_#17130f] transition hover:-translate-y-1 hover:bg-[#96efff]"
                 >
-                  Our TikTok
+                  TikTok
                 </a>
                 <a
                   href="https://www.facebook.com/TheNerdyNailTech90/"
@@ -60,7 +60,7 @@ export default async function Home() {
                   rel="noreferrer"
                   className="rounded-2xl border-[3px] border-black bg-[#d5c4ff] px-4 py-3 text-black shadow-[4px_5px_0_#17130f] transition hover:-translate-y-1 hover:bg-[#c1adff]"
                 >
-                  Our Facebook
+                  Facebook
                 </a>
               </div>
             </div>
