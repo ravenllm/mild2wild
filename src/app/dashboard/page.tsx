@@ -9,6 +9,7 @@ import { buildCalendarBoard, calendarActionStatuses, formatDateTimeInputInNewYor
 import { buildCalendarDashboardModel } from "@/lib/calendar-access";
 import { buildDashboardLeadInbox, buildProfileEditorModel } from "@/lib/dashboard-workspace";
 import { canEditOwnedAppointment, detectOwnedCalendarConflicts, parseCalendarLocalDateTimeInput, type OwnedCalendarAppointment } from "@/lib/owned-calendar-system";
+import { buildStaffLoginInviteMetadata, buildStaffLoginInviteRedirectTo, normalizeStaffLoginInvite } from "@/lib/staff-login-invites";
 import { serviceCategories, staffMembers } from "@/lib/studio-data";
 import { services } from "@/lib/studio-data";
 import {
@@ -292,6 +293,36 @@ async function createStaffProfileAction(formData: FormData) {
   redirect(`/dashboard/staff/${normalized.value.slug}/edit?saved=1`);
 }
 
+async function inviteStaffLoginAction(formData: FormData) {
+  "use server";
+
+  const session = await readDashboardSession();
+  if (!session) redirect("/login");
+  if (session.role !== "owner") redirect("/dashboard?inviteLogin=forbidden#profile-controls");
+
+  const currentStaffMembers = await readStoredStaffMembers(staffMembers);
+  const normalized = normalizeStaffLoginInvite(
+    {
+      staffSlug: formData.get("staffSlug"),
+      email: formData.get("email"),
+    },
+    currentStaffMembers,
+  );
+  if (!normalized.ok) redirect(`/dashboard?inviteLogin=${normalized.reason}#profile-controls`);
+
+  const supabase = createSupabaseServerClient();
+  if (!supabase) redirect(`/dashboard?inviteLogin=supabase_not_configured&staff=${normalized.staff.slug}#profile-controls`);
+
+  const { error } = await supabase.auth.admin.inviteUserByEmail(normalized.email, {
+    data: buildStaffLoginInviteMetadata(normalized.staff),
+    redirectTo: buildStaffLoginInviteRedirectTo(normalized.staff.slug),
+  });
+
+  if (error) redirect(`/dashboard?inviteLogin=failed&staff=${normalized.staff.slug}#profile-controls`);
+  revalidatePath("/dashboard");
+  redirect(`/dashboard?inviteLogin=sent&staff=${normalized.staff.slug}#profile-controls`);
+}
+
 export default async function DashboardPage() {
   const session = await readDashboardSession();
 
@@ -501,7 +532,7 @@ export default async function DashboardPage() {
                   <p className="text-xs font-black uppercase tracking-[0.2em] text-pink-100/60">New staff template</p>
                   <h3 className="brand-display mt-1 text-2xl font-black uppercase text-white">Create a profile</h3>
                 </div>
-                <button type="submit" className="rounded-full bg-pink-300 px-5 py-3 text-xs font-black uppercase tracking-[0.16em] text-black transition hover:bg-white">
+                <button type="submit" className="min-h-11 rounded-full bg-pink-300 px-5 py-3 text-xs font-black uppercase tracking-[0.16em] text-black transition hover:bg-white">
                   Create + edit
                 </button>
               </div>
@@ -550,22 +581,35 @@ export default async function DashboardPage() {
               <p className="mt-3 text-xs font-bold leading-5 text-white/45">After creating, Caitlin lands on the regular profile editor to add portfolio showcase rows and polish the page.</p>
             </form>
           ) : null}
-          <div className="mt-6 max-h-[34rem] space-y-3 overflow-y-auto pr-2 [scrollbar-color:#FF8AC8_rgba(255,255,255,0.08)]">
+          <div id="profile-controls" className="mt-6 max-h-[34rem] space-y-3 overflow-y-auto pr-2 [scrollbar-color:#FF8AC8_rgba(255,255,255,0.08)]">
             {profileEditorModel.editableProfiles.length === 0 ? (
               <div className="rounded-3xl border border-dashed border-white/15 bg-black/40 p-5 text-sm leading-6 text-white/58">
                 No profile editors are available for this login. Caitlin&apos;s admin account handles all bios, colors, templates, and portfolio uploads.
               </div>
             ) : profileEditorModel.editableProfiles.map((profile) => (
-              <Link key={profile.slug} href={`/dashboard/staff/${profile.slug}/edit`} className="block rounded-3xl border border-white/10 bg-white/5 p-4 transition hover:border-white/30 hover:bg-white/10">
-                <div className="flex items-center justify-between gap-4">
+              <article key={profile.slug} className="rounded-3xl border border-white/10 bg-white/5 p-4">
+                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
                   <div className="min-w-0">
                     <p className="truncate text-lg font-black text-white">{profile.name}</p>
                     <p className="mt-1 text-xs font-black uppercase tracking-[0.18em] text-white/45">{profile.title}</p>
+                    <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/55">{profile.serviceNames.join(" · ")}</p>
                   </div>
-                  <span className="rounded-full bg-pink-300 px-3 py-1 text-[0.62rem] font-black uppercase tracking-[0.14em] text-black">Edit</span>
+                  <Link href={`/dashboard/staff/${profile.slug}/edit`} className="inline-flex min-h-11 items-center justify-center rounded-full bg-pink-300 px-4 py-3 text-[0.62rem] font-black uppercase tracking-[0.14em] text-black transition hover:bg-white">
+                    Edit profile
+                  </Link>
                 </div>
-                <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/55">{profile.serviceNames.join(" · ")}</p>
-              </Link>
+                <form action={inviteStaffLoginAction} className="mt-4 rounded-2xl border border-cyan-200/15 bg-black/35 p-3">
+                  <input type="hidden" name="staffSlug" value={profile.slug} />
+                  <p className="text-[0.66rem] font-black uppercase tracking-[0.18em] text-cyan-100/60">Invite login</p>
+                  <p className="mt-1 text-xs leading-5 text-white/45">Send this employee a Supabase invite locked to this exact public profile. They cannot choose or switch profiles.</p>
+                  <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                    <input name="email" type="email" required placeholder={`${profile.name}'s email`} className="min-w-0 flex-1 rounded-2xl border border-white/10 bg-black px-3 py-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-cyan-200/60" />
+                    <button type="submit" className="rounded-full bg-cyan-200 px-4 py-3 text-xs font-black uppercase tracking-[0.16em] text-black transition hover:bg-white">
+                      Send invite
+                    </button>
+                  </div>
+                </form>
+              </article>
             ))}
           </div>
         </article>
