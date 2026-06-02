@@ -61,7 +61,7 @@ describe("booking foundation", () => {
     expect(filterBookingServiceGroupsForStaff(groups, "team-member-12")).toBe(groups);
     expect(resolveInitialBookingSelection(groups, "team-member-12")).toEqual({
       serviceSlug: "acrylic-full-set",
-      staffSlug: "team-member-15",
+      staffSlug: "team-member-21",
     });
   });
 

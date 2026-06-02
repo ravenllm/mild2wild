@@ -69,14 +69,14 @@ describe("staff profile overrides", () => {
       staffMembers,
     );
 
-    expect(creation).toMatchObject({ ok: true, value: { slug: "team-member-21", categorySlug: "hair" } });
+    expect(creation).toMatchObject({ ok: true, value: { slug: "team-member-22", categorySlug: "hair" } });
     if (!creation.ok) throw new Error("Expected new staff creation to be valid.");
 
     const merged = appendCreatedStaffProfiles(staffMembers, { [creation.value.slug]: creation.value });
-    const newHire = merged.find((staff) => staff.slug === "team-member-21");
+    const newHire = merged.find((staff) => staff.slug === "team-member-22");
 
     expect(newHire).toMatchObject({
-      slug: "team-member-21",
+      slug: "team-member-22",
       name: "New Hire",
       title: "Hair Stylist",
       photoUrl: "/staff/new-staff-placeholder.svg",

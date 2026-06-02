@@ -46,6 +46,7 @@ describe("Mild 2 Wild service and staff rules", () => {
       "team-member-15",
       "team-member-16",
       "team-member-17",
+      "team-member-21",
     ]);
     expect(slugsFor("hair")).toEqual(["team-member-08", "team-member-09", "team-member-11", "team-member-18"]);
     expect(slugsFor("tattoo")).toEqual(["team-member-03", "team-member-07", "team-member-10", "team-member-19"]);
@@ -185,6 +186,17 @@ describe("Mild 2 Wild service and staff rules", () => {
     expect(tim?.serviceSlugs).toEqual([]);
     expect(tim?.photoUrl).toBe("/staff/team-member-20.jpg");
     expect(tim?.bio).toContain("contact the studio");
+  });
+
+  it("maps Alicia to team member 21 as a nail artist", () => {
+    const alicia = getStaffBySlug("team-member-21");
+
+    expect(alicia?.name).toBe("Alicia");
+    expect(alicia?.title).toBe("Nail Artist");
+    expect(alicia?.serviceCategorySlugs).toEqual(["nails"]);
+    expect(alicia?.serviceSlugs).toContain("gel-full-set");
+    expect(alicia?.photoUrl).toBe("/staff/team-member-21.jpg");
+    expect(alicia?.bio).toContain("nail artist at Mild 2 Wild");
   });
 
   it("uses the received client menu prices for non-tattoo service categories", () => {

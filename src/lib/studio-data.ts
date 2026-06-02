@@ -694,6 +694,7 @@ const publicStaffNames: Record<number, string> = {
   18: "Sharvelle",
   19: "Mari",
   20: "Tim",
+  21: "Alicia",
 };
 
 const categoryAccentRotation: Record<ServiceCategorySlug, string[]> = {
@@ -723,6 +724,9 @@ const mariBio =
 
 const timBio =
   "Tim is part of the Mild 2 Wild team. Guests can contact the studio for current details about his availability and services.";
+
+const aliciaBio =
+  "Alicia is a nail artist at Mild 2 Wild. Guests can contact the studio for current details about her availability, nail services, and appointment options.";
 
 const liaBio =
   "Hi! My name is Lia and I have been a licensed nail tech for almost 2 years. I love doing animal print, alternative, and Y2K designs. I’m a huge Hello Kitty lover and I love anime!";
@@ -871,6 +875,7 @@ const staffSeed: Array<{ index: number; categorySlug?: ServiceCategorySlug; isMa
   { index: 18, categorySlug: "hair" },
   { index: 19, categorySlug: "tattoo" },
   { index: 20 },
+  { index: 21, categorySlug: "nails" },
 ];
 
 export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug, isMascot }) => {
@@ -888,6 +893,7 @@ export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug,
   const isSharvelle = index === 18;
   const isMari = index === 19;
   const isTim = index === 20;
+  const isAlicia = index === 21;
 
   return {
     slug: `team-member-${paddedIndex}`,
@@ -913,9 +919,11 @@ export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug,
                   ? mariBio
                   : isTim
                     ? timBio
-                    : categorySlug
-                      ? categoryBio[categorySlug]
-                      : "Contact the studio for current availability and service details for this team member.",
+                    : isAlicia
+                      ? aliciaBio
+                      : categorySlug
+                        ? categoryBio[categorySlug]
+                        : "Contact the studio for current availability and service details for this team member.",
     photoUrl: `/staff/team-member-${paddedIndex}.jpg`,
     serviceCategorySlugs: categorySlug ? [categorySlug] : [],
     serviceSlugs: categorySlug ? serviceSlugsByCategory[categorySlug] : [],
