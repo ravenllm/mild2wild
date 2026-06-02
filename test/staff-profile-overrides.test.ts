@@ -35,6 +35,7 @@ describe("staff profile overrides", () => {
         tiktokUrl: "",
         gallery: ["Chrome sets", "Fine detail work"],
         portfolioImages: [{ src: "/staff/caitlin/work-01.jpg", alt: "Chrome nails by Caitlin.", label: "Chrome nails" }],
+        serviceSlugs: ["manicure", "deluxe-manicure"],
       },
     });
 
@@ -48,6 +49,8 @@ describe("staff profile overrides", () => {
     expect(caitlin?.socialLinks.map((link) => link.label)).not.toContain("Instagram coming soon");
     expect(caitlin?.gallery).toEqual(["Chrome sets", "Fine detail work"]);
     expect(caitlin?.portfolioImages?.[0]).toMatchObject({ src: "/staff/caitlin/work-01.jpg", label: "Chrome nails" });
+    expect(caitlin?.serviceSlugs).toEqual(["manicure", "deluxe-manicure"]);
+    expect(caitlin?.serviceCategorySlugs).toEqual(["nails"]);
     expect(merged.find((staff) => staff.slug === "team-member-10")?.name).toBe("Surge");
   });
 
@@ -66,22 +69,23 @@ describe("staff profile overrides", () => {
       staffMembers,
     );
 
-    expect(creation).toMatchObject({ ok: true, value: { slug: "team-member-18", categorySlug: "hair" } });
+    expect(creation).toMatchObject({ ok: true, value: { slug: "team-member-21", categorySlug: "hair" } });
     if (!creation.ok) throw new Error("Expected new staff creation to be valid.");
 
     const merged = appendCreatedStaffProfiles(staffMembers, { [creation.value.slug]: creation.value });
-    const newHire = merged.find((staff) => staff.slug === "team-member-18");
+    const newHire = merged.find((staff) => staff.slug === "team-member-21");
 
     expect(newHire).toMatchObject({
-      slug: "team-member-18",
+      slug: "team-member-21",
       name: "New Hire",
       title: "Hair Stylist",
       photoUrl: "/staff/new-staff-placeholder.svg",
       serviceCategorySlugs: ["hair"],
-      serviceSlugs: ["vivids-color", "cut-style"],
       gallery: ["Color work", "Event styling"],
       calendarColor: "#FFB84D",
     });
+    expect(newHire?.serviceSlugs).toContain("cut-with-wash");
+    expect(newHire?.serviceSlugs).toContain("full-color");
     expect(newHire?.socialLinks.find((link) => link.label === "Instagram")?.href).toBe("https://newhirehair");
   });
 
@@ -94,6 +98,7 @@ describe("staff profile overrides", () => {
       tiktokUrl: " ",
       galleryNotes: " Chrome sets \n Fine details ",
       portfolioImages: [{ src: "/staff/caitlin/work-01.jpg", label: " Chrome nails ", alt: " Silver chrome nail art. " }],
+      serviceSlugs: ["manicure", "not-real", "manicure", "cut-with-wash"],
     });
 
     expect(result).toEqual({
@@ -106,6 +111,7 @@ describe("staff profile overrides", () => {
         tiktokUrl: "",
         gallery: ["Chrome sets", "Fine details"],
         portfolioImages: [{ src: "/staff/caitlin/work-01.jpg", label: "Chrome nails", alt: "Silver chrome nail art." }],
+        serviceSlugs: ["manicure", "cut-with-wash"],
       },
     });
 

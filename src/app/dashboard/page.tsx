@@ -596,7 +596,7 @@ export default async function DashboardPage() {
           {calendarBoard.visibleLanes.map((lane) => {
             const staff = mergedStaffMembers.find((item) => item.slug === lane.staffSlug);
             const category = serviceCategories.find((item) => item.slug === staff?.serviceCategorySlugs[0]);
-            const laneServices = services.filter((service) => staff?.serviceCategorySlugs.includes(service.categorySlug));
+            const laneServices = services.filter((service) => staff?.serviceSlugs.includes(service.slug));
             return (
               <article
                 key={lane.staffSlug}

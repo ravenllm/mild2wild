@@ -5,6 +5,7 @@ import {
   getStaffBySlug,
   getStaffDashboardScope,
   serviceCategories,
+  services,
   staffMembers,
 } from "../src/lib/studio-data";
 
@@ -27,7 +28,7 @@ describe("Mild 2 Wild service and staff rules", () => {
           staff.bio &&
           staff.photoUrl &&
           staff.socialLinks.length > 0 &&
-          (staff.serviceCategorySlugs.length > 0 || staff.isMascot),
+          (staff.serviceCategorySlugs.length > 0 || staff.isMascot || staff.title === "Role coming soon"),
       ),
     ).toBe(true);
   });
@@ -46,8 +47,8 @@ describe("Mild 2 Wild service and staff rules", () => {
       "team-member-15",
       "team-member-16",
     ]);
-    expect(slugsFor("hair")).toEqual(["team-member-08", "team-member-09", "team-member-11"]);
-    expect(slugsFor("tattoo")).toEqual(["team-member-03", "team-member-07", "team-member-10"]);
+    expect(slugsFor("hair")).toEqual(["team-member-08", "team-member-09", "team-member-11", "team-member-18"]);
+    expect(slugsFor("tattoo")).toEqual(["team-member-03", "team-member-07", "team-member-10", "team-member-19"]);
     expect(slugsFor("aesthetics")).toEqual(["team-member-04", "team-member-17"]);
     const mascot = staffMembers.find((staff) => staff.slug === "team-member-12");
     expect(mascot?.isMascot).toBe(true);
@@ -68,6 +69,19 @@ describe("Mild 2 Wild service and staff rules", () => {
     expect(caitlin?.title).toBe("Nail Artist");
     expect(caitlin?.serviceCategorySlugs).toEqual(["nails"]);
     expect(caitlin?.photoUrl).toBe("/staff/team-member-13.jpg");
+  });
+
+  it("maps Lia to team member 05 with her nail bio and portfolio", () => {
+    const lia = getStaffBySlug("team-member-05");
+
+    expect(lia?.name).toBe("Lia");
+    expect(lia?.title).toBe("Nail Artist");
+    expect(lia?.serviceCategorySlugs).toEqual(["nails"]);
+    expect(lia?.photoUrl).toBe("/staff/team-member-05.jpg");
+    expect(lia?.bio).toContain("licensed nail tech for almost 2 years");
+    expect(lia?.gallery).toEqual(["Animal print", "Alternative nails", "Y2K designs"]);
+    expect(lia?.portfolioImages).toHaveLength(10);
+    expect(lia?.portfolioImages?.[0].src).toBe("/staff/lia/lia-nails-01.jpg");
   });
 
   it("maps Juny to team member 02 as a nail artist", () => {
@@ -110,6 +124,56 @@ describe("Mild 2 Wild service and staff rules", () => {
     expect(moxie?.serviceCategorySlugs).toEqual(["nails"]);
     expect(moxie?.photoUrl).toBe("/staff/team-member-14.jpg");
     expect(moxie?.portfolioImages).toBeUndefined();
+  });
+
+  it("maps Sharvelle to team member 18 as a hair stylist", () => {
+    const sharvelle = getStaffBySlug("team-member-18");
+
+    expect(sharvelle?.name).toBe("Sharvelle");
+    expect(sharvelle?.title).toBe("Hair Stylist");
+    expect(sharvelle?.serviceCategorySlugs).toEqual(["hair"]);
+    expect(sharvelle?.serviceSlugs).toContain("cut-with-wash");
+    expect(sharvelle?.serviceSlugs).toContain("balayage");
+    expect(sharvelle?.photoUrl).toBe("/staff/team-member-18.jpg");
+    expect(sharvelle?.bio).toContain("hair team");
+    expect(sharvelle?.calendarColor).toBe("#FF4FB3");
+  });
+
+  it("maps Mari to team member 19 as a tattoo artist", () => {
+    const mari = getStaffBySlug("team-member-19");
+
+    expect(mari?.name).toBe("Mari");
+    expect(mari?.title).toBe("Tattoo Artist");
+    expect(mari?.serviceCategorySlugs).toEqual(["tattoo"]);
+    expect(mari?.serviceSlugs).toEqual(["tattoo-consult", "flash-tattoo"]);
+    expect(mari?.photoUrl).toBe("/staff/team-member-19.jpg");
+    expect(mari?.bio).toContain("tattoo artist at Mild 2 Wild");
+    expect(mari?.calendarColor).toBe("#00C8D8");
+  });
+
+  it("adds Tim as a pending-role team member without making him bookable yet", () => {
+    const tim = getStaffBySlug("team-member-20");
+
+    expect(tim?.name).toBe("Tim");
+    expect(tim?.title).toBe("Role coming soon");
+    expect(tim?.serviceCategorySlugs).toEqual([]);
+    expect(tim?.serviceSlugs).toEqual([]);
+    expect(tim?.photoUrl).toBe("/staff/team-member-20.jpg");
+    expect(tim?.bio).toContain("role and service details will be added");
+  });
+
+  it("uses the received client menu prices for non-tattoo service categories", () => {
+    const bySlug = new Map(services.map((service) => [service.slug, service]));
+
+    expect(bySlug.get("acrylic-full-set")?.priceLabel).toBe("$60");
+    expect(bySlug.get("ultimate-pedicure")?.description).toContain("hot stones");
+    expect(bySlug.get("cut-with-wash")?.priceLabel).toBe("$35");
+    expect(bySlug.get("balayage")?.priceLabel).toBe("$200+");
+    expect(bySlug.get("brow-wax-lami-tint")?.priceLabel).toBe("$65");
+    expect(bySlug.get("volume-lash-set")?.priceLabel).toBe("$100");
+    expect(bySlug.get("sixty-minute-facial")?.priceLabel).toBe("$60.00");
+    expect(bySlug.get("full-leg-wax")?.priceLabel).toBe("$40.00");
+    expect(bySlug.get("tattoo-consult")?.priceLabel).toBe("Menu pending");
   });
 
   it("models owner/admin access differently from individual employee calendar access", () => {

@@ -54,7 +54,7 @@ export function SiteHeader() {
     ["Staff", "/staff"],
     ["Tour", "/tour"],
     ["Products", "/products"],
-    ["Dog Game", "/dog-clicker"],
+    ["Treat Rush", "/dog-clicker"],
     ["Login", "/login"],
   ];
   const mobileLinks = links.filter(([label]) => label !== "Login");

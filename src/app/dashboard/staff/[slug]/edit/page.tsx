@@ -127,7 +127,6 @@ export default async function StaffEditPage({ params, searchParams }: { params: 
   }
 
   const profile = editModel.profile;
-  const staffServices = services.filter((service) => profile.serviceSlugs.includes(service.slug));
   const categories = serviceCategories.filter((category) => profile.serviceCategorySlugs.includes(category.slug));
   const instagramUrl = profile.socialLinks.find((link) => link.label === "Instagram")?.href ?? "";
   const tiktokUrl = profile.socialLinks.find((link) => link.label === "TikTok")?.href ?? "";
@@ -149,6 +148,7 @@ export default async function StaffEditPage({ params, searchParams }: { params: 
       tiktokUrl: formData.get("tiktokUrl"),
       galleryNotes: formData.get("galleryNotes"),
       portfolioImages: await collectPortfolioImages(formData, slug),
+      serviceSlugs: formData.getAll("serviceSlugs"),
       profileTheme: collectProfileTheme(formData),
     });
 
@@ -176,7 +176,7 @@ export default async function StaffEditPage({ params, searchParams }: { params: 
         {query.error ? <StatusCard tone="error" message={query.error === "locked" ? "That profile is locked for this login." : "Name, title, and bio are required before saving."} /> : null}
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_0.72fr]">
-          <form action={saveProfileAction} className="neon-card rounded-[2rem] p-6" style={{ boxShadow: `0 0 70px ${profile.calendarColor}22` }}>
+          <form id="staff-profile-edit-form" action={saveProfileAction} className="neon-card rounded-[2rem] p-6" style={{ boxShadow: `0 0 70px ${profile.calendarColor}22` }}>
             <label className="block">
               <span className="text-xs font-black uppercase tracking-[0.2em] text-white/45">Display name</span>
               <input name="name" required defaultValue={profile.name} className="mt-2 w-full rounded-2xl border border-white/10 bg-black/60 px-4 py-3 text-white outline-none focus:border-white/40" />
@@ -219,21 +219,46 @@ export default async function StaffEditPage({ params, searchParams }: { params: 
           </form>
 
           <aside className="neon-card rounded-[2rem] p-6">
-            <SectionEyebrow color="#FF8AC8">Profile scope</SectionEyebrow>
-            <h2 className="brand-display text-3xl font-black uppercase">Services stay controlled.</h2>
-            <p className="mt-3 text-sm leading-6 text-white/58">This editor updates the personal meet-me content. Service assignments still come from the booking/service model so nail staff do not accidentally show under tattoo services.</p>
+            <SectionEyebrow color="#FF8AC8">Service controls</SectionEyebrow>
+            <h2 className="brand-display text-3xl font-black uppercase">What can {profile.name} do?</h2>
+            <p className="mt-3 text-sm leading-6 text-white/58">Caitlin can turn services on or off for this employee. The public menu and booking picker read these saved assignments immediately.</p>
             <div className="mt-5 flex flex-wrap gap-2">
-              {categories.map((category) => (
+              {categories.length > 0 ? categories.map((category) => (
                 <span key={category.slug} className="rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-black" style={{ background: category.accent }}>{category.name}</span>
-              ))}
+              )) : <span className="rounded-full border border-white/10 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-white/45">No active service category</span>}
             </div>
-            <div className="mt-6 space-y-3">
-              {staffServices.map((service) => (
-                <div key={service.slug} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <p className="font-black text-white">{service.name}</p>
-                  <p className="mt-1 text-sm text-white/50">{service.priceLabel} · {service.durationMinutes}m</p>
-                </div>
-              ))}
+            <div className="mt-6 max-h-[44rem] space-y-4 overflow-y-auto pr-1 [scrollbar-color:#FF8AC8_rgba(255,255,255,0.08)]">
+              {serviceCategories.map((category) => {
+                const categoryServices = services.filter((service) => service.categorySlug === category.slug);
+                return (
+                  <section key={category.slug} className="rounded-3xl border border-white/10 bg-white/5 p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-xs font-black uppercase tracking-[0.18em]" style={{ color: category.accent }}>{category.name}</p>
+                      <span className="rounded-full bg-black/40 px-3 py-1 text-[0.62rem] font-black uppercase tracking-[0.14em] text-white/45">
+                        {categoryServices.filter((service) => profile.serviceSlugs.includes(service.slug)).length}/{categoryServices.length}
+                      </span>
+                    </div>
+                    <div className="mt-3 space-y-2">
+                      {categoryServices.map((service) => (
+                        <label key={service.slug} className="flex cursor-pointer items-start gap-3 rounded-2xl border border-white/10 bg-black/35 p-3 transition hover:border-white/30 hover:bg-black/55">
+                          <input
+                            form="staff-profile-edit-form"
+                            name="serviceSlugs"
+                            value={service.slug}
+                            type="checkbox"
+                            defaultChecked={profile.serviceSlugs.includes(service.slug)}
+                            className="mt-1 shrink-0 accent-pink-300"
+                          />
+                          <span className="min-w-0">
+                            <span className="block font-black text-white">{service.name}</span>
+                            <span className="mt-1 block text-xs font-bold leading-5 text-white/45">{service.priceLabel} · {service.durationMinutes}m</span>
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
             </div>
           </aside>
         </div>

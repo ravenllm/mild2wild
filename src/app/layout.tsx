@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bangers, Geist, Geist_Mono, Permanent_Marker } from "next/font/google";
 import { buildLocalBusinessJsonLd, buildWebsiteJsonLd, businessName, siteUrl } from "@/lib/seo";
 import "./globals.css";
@@ -27,6 +27,11 @@ const marker = Permanent_Marker({
 
 const localBusinessJsonLd = buildLocalBusinessJsonLd();
 const websiteJsonLd = buildWebsiteJsonLd();
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

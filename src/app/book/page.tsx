@@ -5,6 +5,8 @@ import { buildBookingServiceGroups } from "@/lib/booking-foundation";
 import { serviceCategories, services, staffMembers } from "@/lib/studio-data";
 import { readStoredStaffMembers } from "@/lib/staff-profile-overrides";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Request an Appointment",
   description: "Choose a Mild 2 Wild service, pick a preferred team member, and send a booking request for tattoos, nails, hair, aesthetics, or spa services.",
@@ -27,6 +29,9 @@ const helpCards = [
   ["Describe the vibe", "If you are unsure, describe the look or experience you want in the notes.", "#c7f2ff"],
   ["We match it up", "The shop can recommend the best fit when confirming your request.", "#d9ffb8"],
 ];
+
+const menuPanelBackgrounds = ["#ffcae6", "#c7f2ff", "#fff0a3", "#d9ffb8"];
+const menuPanelMarks = ["✦", "✧", "★", "✸"];
 
 export default async function BookPage({ searchParams }: { searchParams?: Promise<{ staff?: string }> }) {
   const params = await searchParams;
@@ -88,35 +93,51 @@ export default async function BookPage({ searchParams }: { searchParams?: Promis
         </div>
 
         <div className="mt-10 grid min-w-0 gap-5 md:grid-cols-4">
-          {bookingGroups.map((group, groupIndex) => (
-            <section
-              key={group.slug}
-              className="neon-card min-w-0 overflow-hidden rounded-[2rem] p-5"
-              style={{ boxShadow: `7px 8px 0 #17130f, 0 0 0 7px ${group.accent}33, 0 24px 54px rgba(40, 26, 20, 0.18)` }}
-            >
-              <div className="mb-4">
-                <h3 className="brand-display text-2xl font-black uppercase text-black">
-                  {group.name}
-                </h3>
-              </div>
-              <ul className="space-y-2.5 text-sm">
-                {group.services.flatMap((service, serviceIndex) =>
-                  service.compatibleStaff.map((staff, staffIndex) => (
-                    <li
-                      key={`${service.slug}-${staff.slug}`}
-                      className="rounded-2xl border-2 border-black bg-white/70 px-3 py-2 font-bold text-black/72 shadow-[3px_4px_0_#17130f]"
-                    >
-                      <span className="marker-script mr-1 text-base uppercase text-black" style={{ color: group.accent }}>
-                        {["✦", "✧", "★", "✸"][(groupIndex + serviceIndex + staffIndex) % 4]}
-                      </span>
-                      <span className="font-black text-black">{staff.name}</span>
-                      <span className="text-black/58"> / {service.name}</span>
-                    </li>
-                  )),
-                )}
-              </ul>
-            </section>
-          ))}
+          {bookingGroups.map((group, groupIndex) => {
+            const panelBackground = menuPanelBackgrounds[groupIndex % menuPanelBackgrounds.length];
+            const panelTilt = groupIndex % 2 === 0 ? "md:-rotate-[0.45deg]" : "md:rotate-[0.45deg]";
+            return (
+              <section
+                key={group.slug}
+                className={`neon-card group relative min-w-0 overflow-hidden rounded-[2rem] p-5 transition duration-300 hover:-translate-y-1 hover:rotate-0 ${panelTilt}`}
+                style={{
+                  background: `linear-gradient(145deg, rgba(255, 253, 245, 0.94), ${panelBackground}70), radial-gradient(circle at 90% 0%, ${group.accent}42, transparent 7rem)`,
+                  boxShadow: `7px 8px 0 #17130f, 0 0 0 7px ${group.accent}40, 0 24px 54px rgba(40, 26, 20, 0.18)`,
+                }}
+              >
+                <PaintSplat color={group.accent} variant="bubble" className="pointer-events-none absolute -right-14 -top-14 w-36 rotate-12 opacity-25 transition group-hover:scale-110" />
+                <div className="relative z-10 mb-4 flex items-start justify-between gap-3">
+                  <div>
+                    <span className="service-sticker mb-3 inline-flex rounded-full px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.14em]" style={{ background: panelBackground }}>
+                      {menuPanelMarks[groupIndex % menuPanelMarks.length]} Service menu
+                    </span>
+                    <h3 className="brand-display text-3xl font-black uppercase text-black">
+                      {group.name}
+                    </h3>
+                  </div>
+                  <span className="rounded-full border-2 border-black bg-white/80 px-3 py-1 text-xs font-black text-black/65 shadow-[2px_3px_0_#17130f]">
+                    {group.services.length}
+                  </span>
+                </div>
+                <ul className="relative z-10 max-h-[36rem] space-y-2.5 overflow-y-auto pr-1 text-sm">
+                  {group.services.flatMap((service, serviceIndex) =>
+                    service.compatibleStaff.map((staff, staffIndex) => (
+                      <li
+                        key={`${service.slug}-${staff.slug}`}
+                        className="rounded-2xl border-2 border-black bg-white/75 px-3 py-2 font-bold text-black/72 shadow-[3px_4px_0_#17130f] transition hover:-translate-y-0.5 hover:bg-white"
+                      >
+                        <span className="marker-script mr-1 text-base uppercase text-black" style={{ color: group.accent }}>
+                          {menuPanelMarks[(groupIndex + serviceIndex + staffIndex) % menuPanelMarks.length]}
+                        </span>
+                        <span className="font-black text-black">{staff.name}</span>
+                        <span className="text-black/58"> / {service.name}</span>
+                      </li>
+                    )),
+                  )}
+                </ul>
+              </section>
+            );
+          })}
         </div>
       </section>
     </PageShell>

@@ -1,4 +1,4 @@
-import type { ServiceCategory, StaffMember, StudioService } from "./studio-data";
+import { sortStaffByName, type ServiceCategory, type StaffMember, type StudioService } from "./studio-data";
 import { parseCalendarLocalDateTimeInput } from "./owned-calendar-system";
 
 export type BookingRequestInput = {
@@ -138,7 +138,7 @@ export function buildBookingServiceGroups({
   services: StudioService[];
   staffMembers: StaffMember[];
 }): BookingServiceGroup[] {
-  const bookableStaff = staffMembers.filter((staff) => !staff.isMascot);
+  const bookableStaff = sortStaffByName(staffMembers.filter((staff) => !staff.isMascot));
 
   return serviceCategories.map((category) => ({
     slug: category.slug,

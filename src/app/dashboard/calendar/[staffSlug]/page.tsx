@@ -274,9 +274,9 @@ export default async function StaffCalendarPage({ params }: { params: Promise<{ 
   const lane = board.visibleLanes.find((item) => item.staffSlug === staffSlug);
   const dayView = buildCalendarDayView(lane?.appointments ?? []);
   const category = serviceCategories.find((item) => staff.serviceCategorySlugs.includes(item.slug));
-  const laneServices = services.filter((service) => staff.serviceCategorySlugs.includes(service.categorySlug));
+  const laneServices = services.filter((service) => staff.serviceSlugs.includes(service.slug));
   const editableStaffMembers = mergedStaffMembers.filter((item) => !item.isMascot && canEditOwnedAppointment(session, { staffSlug: item.slug }));
-  const addableServices = session.role === "owner" ? services : laneServices;
+  const addableServices = laneServices;
 
   return (
     <PageShell>

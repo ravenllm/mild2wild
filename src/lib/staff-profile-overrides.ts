@@ -19,6 +19,7 @@ export type StaffProfileUpdate = {
   tiktokUrl: string;
   gallery: string[];
   portfolioImages: PortfolioImage[];
+  serviceSlugs?: string[];
   profileTheme?: StaffProfileTheme;
 };
 
@@ -63,11 +64,20 @@ export function mergeStaffProfileOverrides(staffMembers: StaffMember[], override
     if (override.instagramUrl) socialLinks.push({ label: "Instagram", href: override.instagramUrl });
     if (override.tiktokUrl) socialLinks.push({ label: "TikTok", href: override.tiktokUrl });
 
+    const serviceSlugs = override.serviceSlugs ?? staff.serviceSlugs;
+    const serviceCategorySlugs = Array.from(new Set(
+      services
+        .filter((service) => serviceSlugs.includes(service.slug))
+        .map((service) => service.categorySlug),
+    ));
+
     return {
       ...staff,
       name: override.name || staff.name,
       title: override.title || staff.title,
       bio: override.bio || staff.bio,
+      serviceCategorySlugs,
+      serviceSlugs,
       socialLinks,
       gallery: override.gallery.length > 0 ? override.gallery : staff.gallery,
       portfolioImages: override.portfolioImages.length > 0 ? override.portfolioImages : staff.portfolioImages,
@@ -122,6 +132,7 @@ export function normalizeStaffProfileUpdate(input: Record<string, unknown>): Nor
   const tiktokUrl = normalizeOptionalUrl(input.tiktokUrl);
   const gallery = normalizeGallery(input.gallery ?? input.galleryNotes);
   const portfolioImagesResult = normalizePortfolioImages(input.portfolioImages);
+  const serviceSlugs = normalizeServiceSlugs(input.serviceSlugs);
   const profileTheme = input.profileTheme === undefined ? undefined : normalizeStaffProfileTheme(input.profileTheme, "recommended");
   const errors: string[] = [];
 
@@ -143,6 +154,7 @@ export function normalizeStaffProfileUpdate(input: Record<string, unknown>): Nor
       tiktokUrl: tiktokUrl ?? "",
       gallery,
       portfolioImages: portfolioImagesResult.value,
+      ...(serviceSlugs ? { serviceSlugs } : {}),
       ...(profileTheme ? { profileTheme } : {}),
     },
   };
@@ -222,6 +234,12 @@ function buildCreatedStaffMember(profile: StaffProfileCreation): StaffMember {
     ...(profile.tiktokUrl ? [{ label: "TikTok", href: profile.tiktokUrl }] : []),
     { label: "View portfolio", href: "#portfolio" },
   ];
+  const serviceSlugs = profile.serviceSlugs ?? services.filter((service) => service.categorySlug === profile.categorySlug).map((service) => service.slug);
+  const serviceCategorySlugs = Array.from(new Set(
+    services
+      .filter((service) => serviceSlugs.includes(service.slug))
+      .map((service) => service.categorySlug),
+  ));
 
   return {
     slug: profile.slug,
@@ -229,8 +247,8 @@ function buildCreatedStaffMember(profile: StaffProfileCreation): StaffMember {
     title: profile.title,
     bio: profile.bio,
     photoUrl: profile.photoUrl,
-    serviceCategorySlugs: [profile.categorySlug],
-    serviceSlugs: services.filter((service) => service.categorySlug === profile.categorySlug).map((service) => service.slug),
+    serviceCategorySlugs,
+    serviceSlugs,
     socialLinks,
     gallery: profile.gallery.length > 0 ? profile.gallery : [serviceCategories.find((category) => category.slug === profile.categorySlug)?.name ?? "Staff profile"],
     portfolioImages: profile.portfolioImages.length > 0 ? profile.portfolioImages : undefined,
@@ -305,6 +323,17 @@ function normalizeGallery(value: unknown) {
     .map((item) => clean(item))
     .filter(Boolean)
     .slice(0, maxGalleryNotes);
+}
+
+function normalizeServiceSlugs(value: unknown) {
+  if (value === undefined) return undefined;
+  const values = Array.isArray(value) ? value : [value];
+  const validServiceSlugs = new Set(services.map((service) => service.slug));
+  return Array.from(new Set(
+    values
+      .map((item) => clean(item))
+      .filter((slug) => validServiceSlugs.has(slug)),
+  ));
 }
 
 function normalizePortfolioImages(value: unknown): { ok: true; value: PortfolioImage[] } | { ok: false; errors: string[] } {

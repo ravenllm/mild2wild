@@ -3,10 +3,10 @@ import Link from "next/link";
 import { DogTreatIcon } from "@/components/dog-treat-icon";
 import { PageShell, PaintSplat, SectionEyebrow, ServiceCategoryCard, StaffCard } from "@/components/site";
 import { getDogClickerMascot } from "@/lib/dog-clicker";
-import { productHighlights, serviceCategories, staffMembers } from "@/lib/studio-data";
+import { productHighlights, serviceCategories, sortStaffByName, staffMembers } from "@/lib/studio-data";
 
 export default function Home() {
-  const featuredStaff = staffMembers.filter((staff) => !staff.isMascot).slice(0, 6);
+  const featuredStaff = sortStaffByName(staffMembers.filter((staff) => !staff.isMascot)).slice(0, 6);
   const mascot = getDogClickerMascot();
 
   return (
@@ -30,15 +30,34 @@ export default function Home() {
                   Book Now
                 </Link>
                 <Link href="/dog-clicker" className="rounded-full border-[3px] border-black bg-white/70 px-7 py-4 text-center font-black uppercase tracking-[0.2em] text-black shadow-[5px_6px_0_#17130f] transition hover:-translate-y-1 hover:bg-yellow-100">
-                  Play Dog Game
+                  Play Treat Rush
                 </Link>
               </div>
-              <div className="mt-8 grid gap-3 text-sm font-black uppercase tracking-[0.08em] text-black/72 sm:grid-cols-3">
-                {["Tattoo parlor included", "Color-coded services", "Schwebels treat game"].map((item, index) => (
-                  <div key={item} className="rounded-2xl border-[3px] border-black px-4 py-3 shadow-[4px_5px_0_#17130f]" style={{ background: ["#d5c4ff", "#c7f2ff", "#caff9b"][index] }}>
-                    {item}
-                  </div>
-                ))}
+              <div className="mt-8 grid gap-3 text-sm font-black uppercase tracking-[0.08em] text-black/72 sm:grid-cols-3 md:mt-10 lg:mt-24">
+                <a
+                  href="https://www.instagram.com/mild2wild_salon_and_more?igsh=MXZncHF1N3BydjM1dg%3D%3D&utm_source=qr"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-2xl border-[3px] border-black bg-[#ffd3ec] px-4 py-3 text-black shadow-[4px_5px_0_#17130f] transition hover:-translate-y-1 hover:bg-[#ffb8df]"
+                >
+                  Our Instagram
+                </a>
+                <a
+                  href="https://www.tiktok.com/t/ZP8pwFsvx/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-2xl border-[3px] border-black bg-[#bff7ff] px-4 py-3 text-black shadow-[4px_5px_0_#17130f] transition hover:-translate-y-1 hover:bg-[#96efff]"
+                >
+                  Our TikTok
+                </a>
+                <a
+                  href="https://www.facebook.com/TheNerdyNailTech90/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-2xl border-[3px] border-black bg-[#d5c4ff] px-4 py-3 text-black shadow-[4px_5px_0_#17130f] transition hover:-translate-y-1 hover:bg-[#c1adff]"
+                >
+                  Our Facebook
+                </a>
               </div>
             </div>
 
@@ -61,7 +80,7 @@ export default function Home() {
                   <div className="mt-4 flex items-center justify-between gap-3">
                     <div>
                       <p className="text-xs font-black uppercase tracking-[0.2em] text-black/55">New tab</p>
-                      <p className="brand-display text-3xl uppercase text-black">Schwebels Treat Clicker</p>
+                      <p className="brand-display text-3xl uppercase text-black">Schwebels Treat Rush</p>
                     </div>
                     <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-[3px] border-black bg-cyan-200 shadow-[4px_5px_0_#17130f]">
                       <DogTreatIcon icon="bone" className="h-9 w-9" />

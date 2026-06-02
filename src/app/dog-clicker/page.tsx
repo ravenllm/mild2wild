@@ -8,12 +8,12 @@ import { dogClickerTreats } from "@/lib/dog-clicker";
 const treatCardAccents = ["#ffcae6", "#c7f2ff", "#fff1a8", "#d5c4ff"];
 
 export const metadata: Metadata = {
-  title: "Schwebels Treat Clicker",
-  description: "Play Mild 2 Wild's Schwebels treat clicker game, meet the shop dog mascot, and jump back into booking with the human team.",
+  title: "Schwebels Treat Rush",
+  description: "Play Mild 2 Wild's 60-second Schwebels Treat Rush game, build combos, catch golden treats, and jump back into booking with the human team.",
   alternates: { canonical: "/dog-clicker" },
   openGraph: {
-    title: "Schwebels Treat Clicker | Mild 2 Wild",
-    description: "Feed Schwebels treats in Mild 2 Wild's playful shop dog game before booking the human team.",
+    title: "Schwebels Treat Rush | Mild 2 Wild",
+    description: "Feed Schwebels, chase golden treats, build a combo, and book the human team after the round.",
     url: "/dog-clicker",
   },
 };
@@ -26,7 +26,7 @@ export default function DogClickerPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-5 pb-16">
-        <SectionEyebrow color="#caff9b">Treat unlocks</SectionEyebrow>
+        <SectionEyebrow color="#caff9b">Treat Rush unlocks</SectionEyebrow>
         <div className="grid gap-5 md:grid-cols-4">
           {dogClickerTreats.map((treat, index) => (
             <article key={treat.name} className="relative overflow-hidden rounded-[2rem] border-[4px] border-black bg-[#fff7e8] p-4 shadow-[8px_10px_0_#17130f] md:p-5">

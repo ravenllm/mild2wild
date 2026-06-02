@@ -16,7 +16,7 @@ const staffIdsBySlug = new Map([
 
 const serviceIdsBySlug = new Map([
   ["tattoo-consult", "service-tattoo-consult-id"],
-  ["custom-nail-art", "service-custom-nail-art-id"],
+  ["acrylic-full-set", "service-acrylic-full-set-id"],
 ]);
 
 describe("booking foundation", () => {
@@ -25,8 +25,9 @@ describe("booking foundation", () => {
     const tattooConsult = groups.flatMap((group) => group.services).find((service) => service.slug === "tattoo-consult");
 
     expect(tattooConsult?.compatibleStaff.map((staff) => staff.slug)).toEqual([
-      "team-member-03",
       "team-member-07",
+      "team-member-19",
+      "team-member-03",
       "team-member-10",
     ]);
     expect(groups.flatMap((group) => group.services).flatMap((service) => service.compatibleStaff.map((staff) => staff.slug))).not.toContain(
@@ -59,8 +60,8 @@ describe("booking foundation", () => {
 
     expect(filterBookingServiceGroupsForStaff(groups, "team-member-12")).toBe(groups);
     expect(resolveInitialBookingSelection(groups, "team-member-12")).toEqual({
-      serviceSlug: "custom-nail-art",
-      staffSlug: "team-member-01",
+      serviceSlug: "acrylic-full-set",
+      staffSlug: "team-member-13",
     });
   });
 

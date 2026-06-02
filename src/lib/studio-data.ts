@@ -145,76 +145,508 @@ export const serviceCategories: ServiceCategory[] = [
 
 export const services: StudioService[] = [
   {
-    slug: "custom-nail-art",
-    name: "Custom Nail Art",
+    slug: "acrylic-full-set",
+    name: "Acrylic Full Set",
     categorySlug: "nails",
     durationMinutes: 90,
-    priceLabel: "Starting at $65",
-    description: "Hand-painted, chrome, gems, character art, and themed sets.",
+    priceLabel: "$60",
+    description: "Full acrylic set. Gel polish is included at no extra cost.",
   },
   {
-    slug: "gel-manicure",
-    name: "Gel Manicure",
+    slug: "acrylic-fill-in",
+    name: "Acrylic Fill-In",
+    categorySlug: "nails",
+    durationMinutes: 75,
+    priceLabel: "$50",
+    description: "Acrylic fill-in service. Gel polish is included at no extra cost.",
+  },
+  {
+    slug: "poly-gel-full-set",
+    name: "Poly-Gel Full Set",
+    categorySlug: "nails",
+    durationMinutes: 90,
+    priceLabel: "$70",
+    description: "Poly-gel full set. Gel polish is included at no extra cost.",
+  },
+  {
+    slug: "poly-gel-fill-in",
+    name: "Poly-Gel Fill-In",
+    categorySlug: "nails",
+    durationMinutes: 75,
+    priceLabel: "$60",
+    description: "Poly-gel fill-in service. Gel polish is included at no extra cost.",
+  },
+  {
+    slug: "gel-full-set",
+    name: "Gel Full Set",
+    categorySlug: "nails",
+    durationMinutes: 90,
+    priceLabel: "$70",
+    description: "Gel full set with gel polish included at no extra cost.",
+  },
+  {
+    slug: "gel-fill-in",
+    name: "Gel Fill-In",
+    categorySlug: "nails",
+    durationMinutes: 75,
+    priceLabel: "$60",
+    description: "Gel fill-in service with gel polish included at no extra cost.",
+  },
+  {
+    slug: "dip-powder",
+    name: "Dip Powder",
+    categorySlug: "nails",
+    durationMinutes: 75,
+    priceLabel: "$60",
+    description: "Dip powder nail service with gel polish included at no extra cost.",
+  },
+  {
+    slug: "dip-with-tips",
+    name: "Dip With Tips",
+    categorySlug: "nails",
+    durationMinutes: 90,
+    priceLabel: "$65",
+    description: "Dip powder with tips. Gel polish is included at no extra cost.",
+  },
+  {
+    slug: "manicure",
+    name: "Manicure",
+    categorySlug: "nails",
+    durationMinutes: 45,
+    priceLabel: "$30",
+    description: "Natural nail manicure. Kids 10 and under can receive any natural nail service for $10 off.",
+  },
+  {
+    slug: "deluxe-manicure",
+    name: "Deluxe Manicure",
     categorySlug: "nails",
     durationMinutes: 60,
-    priceLabel: "Starting at $45",
-    description: "Long-wear gel polish with cuticle care and glossy finish.",
+    priceLabel: "$50",
+    description: "Deluxe manicure service. Kids 10 and under can receive any natural nail service for $10 off.",
   },
   {
-    slug: "vivids-color",
-    name: "Vivids & Color",
+    slug: "deluxe-pedicure",
+    name: "Deluxe Pedicure",
+    categorySlug: "nails",
+    durationMinutes: 60,
+    priceLabel: "$50",
+    description: "A full pedicure with toe trimming, cuticle and callus removal, lotion massage, sugar scrub, hot towel, and gel polish.",
+  },
+  {
+    slug: "jelly-pedicure",
+    name: "Jelly Pedicure",
+    categorySlug: "nails",
+    durationMinutes: 75,
+    priceLabel: "$65",
+    description: "A full pedicure with warm jelly soak, hydrating jelly massage, sugar scrub, lotion massage, hot towel, and gel polish.",
+  },
+  {
+    slug: "royal-pedicure",
+    name: "Royal Pedicure",
+    categorySlug: "nails",
+    durationMinutes: 80,
+    priceLabel: "$70",
+    description: "A full pedicure with soak, mask, sugar scrub, lotion massage, hot towel, and gel polish.",
+  },
+  {
+    slug: "ultimate-pedicure",
+    name: "Ultimate Pedicure",
+    categorySlug: "nails",
+    durationMinutes: 90,
+    priceLabel: "$80",
+    description: "A full pedicure with soak, mask, sugar scrub, lotion massage, callus softener, hot towel, deep moisturizing treatment, hot stones, and gel polish.",
+  },
+  {
+    slug: "kids-regular-polish",
+    name: "Kids Regular Polish Add-On",
+    categorySlug: "nails",
+    durationMinutes: 15,
+    priceLabel: "Free with adult service",
+    description: "Children under 10 can get regular polish free with an adult service.",
+  },
+  {
+    slug: "cut-with-wash",
+    name: "Cut With Wash",
     categorySlug: "hair",
-    durationMinutes: 180,
-    priceLabel: "Consult required",
-    description: "Bright color, creative placement, and transformation services.",
+    durationMinutes: 45,
+    priceLabel: "$35",
+    description: "Haircut with wash.",
   },
   {
-    slug: "cut-style",
-    name: "Cut & Style",
+    slug: "cut-without-wash",
+    name: "Cut Without Wash",
+    categorySlug: "hair",
+    durationMinutes: 30,
+    priceLabel: "$20",
+    description: "Haircut without wash.",
+  },
+  {
+    slug: "buzz-cut",
+    name: "Buzz Cut",
+    categorySlug: "hair",
+    durationMinutes: 20,
+    priceLabel: "$10",
+    description: "Buzz cut service.",
+  },
+  {
+    slug: "bang-trim",
+    name: "Bang Trim",
+    categorySlug: "hair",
+    durationMinutes: 15,
+    priceLabel: "$5",
+    description: "Bang trim service.",
+  },
+  {
+    slug: "conditioning-treatment",
+    name: "Conditioning Treatment",
+    categorySlug: "hair",
+    durationMinutes: 30,
+    priceLabel: "$20",
+    description: "Hair care treatment for extra conditioning and softness.",
+  },
+  {
+    slug: "roller-set",
+    name: "Roller Set",
+    categorySlug: "hair",
+    durationMinutes: 60,
+    priceLabel: "$45",
+    description: "Roller set styling service.",
+  },
+  {
+    slug: "blowout",
+    name: "Blowout",
+    categorySlug: "hair",
+    durationMinutes: 60,
+    priceLabel: "$40",
+    description: "Blowout service, wash included.",
+  },
+  {
+    slug: "style",
+    name: "Style",
+    categorySlug: "hair",
+    durationMinutes: 60,
+    priceLabel: "$40",
+    description: "Finished style service.",
+  },
+  {
+    slug: "updo",
+    name: "Updo",
     categorySlug: "hair",
     durationMinutes: 75,
-    priceLabel: "Starting at $55",
-    description: "Shape, polish, movement, and style for everyday or events.",
+    priceLabel: "$60",
+    description: "Updo styling service.",
+  },
+  {
+    slug: "spiral-perm",
+    name: "Spiral Perm",
+    categorySlug: "hair",
+    durationMinutes: 180,
+    priceLabel: "$80+",
+    description: "Chemical or color service; final pricing may vary by hair and appointment needs.",
+  },
+  {
+    slug: "partial-perm",
+    name: "Partial Perm",
+    categorySlug: "hair",
+    durationMinutes: 120,
+    priceLabel: "$50",
+    description: "Partial perm service.",
+  },
+  {
+    slug: "full-color",
+    name: "Full Color",
+    categorySlug: "hair",
+    durationMinutes: 150,
+    priceLabel: "$80+",
+    description: "Full color service; final pricing may vary by hair and appointment needs.",
+  },
+  {
+    slug: "full-highlights",
+    name: "Full Highlights",
+    categorySlug: "hair",
+    durationMinutes: 180,
+    priceLabel: "$120+",
+    description: "Full highlight service; final pricing may vary by hair and appointment needs.",
+  },
+  {
+    slug: "balayage",
+    name: "Balayage",
+    categorySlug: "hair",
+    durationMinutes: 210,
+    priceLabel: "$200+",
+    description: "Balayage color service; final pricing may vary by hair and appointment needs.",
+  },
+  {
+    slug: "money-piece",
+    name: "Money Piece",
+    categorySlug: "hair",
+    durationMinutes: 90,
+    priceLabel: "$40+",
+    description: "Money piece color service; final pricing may vary by hair and appointment needs.",
+  },
+  {
+    slug: "partial-color",
+    name: "Partial Color",
+    categorySlug: "hair",
+    durationMinutes: 120,
+    priceLabel: "$50+",
+    description: "Partial color service; final pricing may vary by hair and appointment needs.",
+  },
+  {
+    slug: "partial-highlights",
+    name: "Partial Highlights",
+    categorySlug: "hair",
+    durationMinutes: 120,
+    priceLabel: "$75+",
+    description: "Partial highlight service; final pricing may vary by hair and appointment needs.",
+  },
+  {
+    slug: "root-touch-up",
+    name: "Root Touch Up",
+    categorySlug: "hair",
+    durationMinutes: 90,
+    priceLabel: "$60+",
+    description: "Root touch up service; final pricing may vary by hair and appointment needs.",
   },
   {
     slug: "tattoo-consult",
     name: "Tattoo Consultation",
     categorySlug: "tattoo",
     durationMinutes: 30,
-    priceLabel: "Free / deposit after consult",
-    description: "Discuss concept, placement, sizing, artist fit, and scheduling.",
+    priceLabel: "Menu pending",
+    description: "Tattoo menu is pending; use this option for consultation-first requests while final pricing is collected.",
   },
   {
     slug: "flash-tattoo",
     name: "Flash Tattoo",
     categorySlug: "tattoo",
     durationMinutes: 120,
-    priceLabel: "Artist priced",
-    description: "Pre-drawn flash pieces from the shop's artists.",
+    priceLabel: "Menu pending",
+    description: "Tattoo menu is pending; staff can confirm flash availability, sizing, placement, and pricing.",
   },
   {
-    slug: "facial-glow",
-    name: "Glow Facial",
+    slug: "thirty-minute-facial",
+    name: "30 Min Facial",
+    categorySlug: "aesthetics",
+    durationMinutes: 30,
+    priceLabel: "$40.00",
+    description: "A mini facial starting with cleansing, exfoliation, toner, and moisturizer.",
+  },
+  {
+    slug: "back-facial",
+    name: "Back Facial",
     categorySlug: "aesthetics",
     durationMinutes: 60,
-    priceLabel: "Starting at $80",
-    description: "Relaxing skincare treatment focused on glow and refresh.",
+    priceLabel: "$60.00",
+    description: "A relaxing back facial that includes hot stones, double cleansing, extraction, exfoliation, massage, and more.",
   },
   {
-    slug: "brow-lash",
-    name: "Brow & Lash Detail",
+    slug: "sixty-minute-facial",
+    name: "60 Min Facial",
+    categorySlug: "aesthetics",
+    durationMinutes: 60,
+    priceLabel: "$60.00",
+    description: "A relaxing facial that includes double cleansing, extraction, exfoliation, massage, and more.",
+  },
+  {
+    slug: "dermaplaning",
+    name: "Dermaplaning",
     categorySlug: "aesthetics",
     durationMinutes: 45,
-    priceLabel: "Starting at $35",
-    description: "Brow shaping, tinting, and lash-friendly detail work.",
+    priceLabel: "$75.00",
+    description: "Exfoliates the skin's epidermis by removing dead skin cells and fine hairs.",
+  },
+  {
+    slug: "hot-stone-massage",
+    name: "Hot Stone Massage",
+    categorySlug: "aesthetics",
+    durationMinutes: 60,
+    priceLabel: "$70.00",
+    description: "One-hour hot stone massage.",
+  },
+  {
+    slug: "full-leg-wax",
+    name: "Full Leg Wax",
+    categorySlug: "aesthetics",
+    durationMinutes: 45,
+    priceLabel: "$40.00",
+    description: "Full leg waxing service.",
+  },
+  {
+    slug: "brazilian-wax",
+    name: "Brazilian Wax",
+    categorySlug: "aesthetics",
+    durationMinutes: 45,
+    priceLabel: "$50.00",
+    description: "Brazilian waxing service.",
+  },
+  {
+    slug: "underarm-wax",
+    name: "Underarm Wax",
+    categorySlug: "aesthetics",
+    durationMinutes: 20,
+    priceLabel: "$20.00",
+    description: "Underarm waxing service.",
+  },
+  {
+    slug: "half-arm-wax",
+    name: "Half Arm Wax",
+    categorySlug: "aesthetics",
+    durationMinutes: 30,
+    priceLabel: "$25.00",
+    description: "Half arm waxing service.",
+  },
+  {
+    slug: "lip-chin-wax",
+    name: "Lip/Chin Wax",
+    categorySlug: "aesthetics",
+    durationMinutes: 15,
+    priceLabel: "$10.00",
+    description: "Lip or chin waxing service.",
+  },
+  {
+    slug: "brow-wax-shape",
+    name: "Brow Wax & Shape",
+    categorySlug: "aesthetics",
+    durationMinutes: 20,
+    priceLabel: "$20",
+    description: "Brow wax and shape service.",
+  },
+  {
+    slug: "brow-wax-tint",
+    name: "Brow Wax & Tint",
+    categorySlug: "aesthetics",
+    durationMinutes: 30,
+    priceLabel: "$30",
+    description: "Brow wax and tint service.",
+  },
+  {
+    slug: "brow-wax-lami",
+    name: "Brow Wax & Lami",
+    categorySlug: "aesthetics",
+    durationMinutes: 45,
+    priceLabel: "$50",
+    description: "Brow wax and lamination service.",
+  },
+  {
+    slug: "brow-wax-lami-tint",
+    name: "Brow Wax, Lami, & Tint",
+    categorySlug: "aesthetics",
+    durationMinutes: 60,
+    priceLabel: "$65",
+    description: "Brow wax, lamination, and tint service.",
+  },
+  {
+    slug: "lash-lift-tint",
+    name: "Lash Lift & Tint",
+    categorySlug: "aesthetics",
+    durationMinutes: 60,
+    priceLabel: "$60",
+    description: "Lash lift and tint service.",
+  },
+  {
+    slug: "lash-lift",
+    name: "Lash Lift",
+    categorySlug: "aesthetics",
+    durationMinutes: 45,
+    priceLabel: "$50",
+    description: "Lash lift service.",
+  },
+  {
+    slug: "classic-lash-set",
+    name: "Classic Set",
+    categorySlug: "aesthetics",
+    durationMinutes: 120,
+    priceLabel: "$70",
+    description: "Classic lash extension set.",
+  },
+  {
+    slug: "mixed-lash-set",
+    name: "Mixed Set",
+    categorySlug: "aesthetics",
+    durationMinutes: 150,
+    priceLabel: "$80",
+    description: "Mixed lash extension set.",
+  },
+  {
+    slug: "volume-lash-set",
+    name: "Volume Set",
+    categorySlug: "aesthetics",
+    durationMinutes: 180,
+    priceLabel: "$100",
+    description: "Volume lash extension set.",
+  },
+  {
+    slug: "air-brushed-brow-add-on",
+    name: "Air Brushed Brow Add-On",
+    categorySlug: "aesthetics",
+    durationMinutes: 15,
+    priceLabel: "+$10",
+    description: "Add air brushed brow to any tint service.",
   },
 ];
 
 const serviceSlugsByCategory: Record<ServiceCategorySlug, string[]> = {
-  nails: ["custom-nail-art", "gel-manicure"],
-  hair: ["vivids-color", "cut-style"],
+  nails: [
+    "acrylic-full-set",
+    "acrylic-fill-in",
+    "poly-gel-full-set",
+    "poly-gel-fill-in",
+    "gel-full-set",
+    "gel-fill-in",
+    "dip-powder",
+    "dip-with-tips",
+    "manicure",
+    "deluxe-manicure",
+    "deluxe-pedicure",
+    "jelly-pedicure",
+    "royal-pedicure",
+    "ultimate-pedicure",
+    "kids-regular-polish",
+  ],
+  hair: [
+    "cut-with-wash",
+    "cut-without-wash",
+    "buzz-cut",
+    "bang-trim",
+    "conditioning-treatment",
+    "roller-set",
+    "blowout",
+    "style",
+    "updo",
+    "spiral-perm",
+    "partial-perm",
+    "full-color",
+    "full-highlights",
+    "balayage",
+    "money-piece",
+    "partial-color",
+    "partial-highlights",
+    "root-touch-up",
+  ],
   tattoo: ["tattoo-consult", "flash-tattoo"],
-  aesthetics: ["facial-glow", "brow-lash"],
+  aesthetics: [
+    "thirty-minute-facial",
+    "back-facial",
+    "sixty-minute-facial",
+    "dermaplaning",
+    "hot-stone-massage",
+    "full-leg-wax",
+    "brazilian-wax",
+    "underarm-wax",
+    "half-arm-wax",
+    "lip-chin-wax",
+    "brow-wax-shape",
+    "brow-wax-tint",
+    "brow-wax-lami",
+    "brow-wax-lami-tint",
+    "lash-lift-tint",
+    "lash-lift",
+    "classic-lash-set",
+    "mixed-lash-set",
+    "volume-lash-set",
+    "air-brushed-brow-add-on",
+  ],
 };
 
 const categoryTitles: Record<ServiceCategorySlug, string> = {
@@ -247,7 +679,7 @@ const publicStaffNames: Record<number, string> = {
   2: "Juny",
   3: "Raven Ink",
   4: "Iris Aura",
-  5: "Poppy Polish",
+  5: "Lia",
   6: "Serenity",
   7: "Ace Needle",
   8: "Sol Strands",
@@ -259,6 +691,9 @@ const publicStaffNames: Record<number, string> = {
   15: "Cherry Chrome",
   16: "Pixie Polish",
   17: "Sage Spa",
+  18: "Sharvelle",
+  19: "Mari",
+  20: "Tim",
 };
 
 const categoryAccentRotation: Record<ServiceCategorySlug, string[]> = {
@@ -279,6 +714,71 @@ const junyBio =
 
 const surgeBio =
   "I’m Surge, I’ve been an artist for as long as I can remember, and I’ve always loved bringing people’s ideas to life. Realism and capturing the small details others overlook have always been my passion. Throughout my life, people constantly told me I should do something with my art, but I never knew what that would be. I spent years working in factories and warehouses until a serious work injury changed everything. A herniated disc left me unable to do the heavy lifting and physical work I relied on to provide for my family. It was devastating, and I felt lost. While working as a waiter, several coworkers encouraged me to apply for a tattoo apprenticeship. Looking back, it felt like life was pushing me toward the path I was meant to take. Art had always been there — I just needed the push to pursue it. Today, tattooing allows me to combine my love for art with my passion for helping people. Whether it’s creating meaningful memorial pieces, covering scars, designing something unique, or simply helping someone feel more confident, I take pride in making every tattoo personal. For me, tattooing isn’t just artwork — it’s a way to connect with people and make a positive impact in their lives.";
+
+const sharvelleBio =
+  "Sharvelle is part of the Mild 2 Wild hair team, helping guests plan cuts, color, styling, and transformation appointments that fit their look and routine.";
+
+const mariBio =
+  "Mari is a tattoo artist at Mild 2 Wild. Her tattoo menu and full profile details are still being collected, but guests can use her profile for consultation-first tattoo requests.";
+
+const timBio =
+  "Tim is part of the Mild 2 Wild team. His role and service details will be added once they are confirmed.";
+
+const liaBio =
+  "Hi! My name is Lia and I have been a licensed nail tech for almost 2 years. I love doing animal print, alternative, and Y2K designs. I’m a huge Hello Kitty lover and I love anime!";
+
+const liaPortfolioImages: PortfolioImage[] = [
+  {
+    src: "/staff/lia/lia-nails-01.jpg",
+    alt: "Lia nail art with soft pink French tips, white details, and small accent designs.",
+    label: "Soft pink French details",
+  },
+  {
+    src: "/staff/lia/lia-nails-02.jpg",
+    alt: "Lia nail art with long black alternative nails, white line art, and dark graphic accents.",
+    label: "Black alternative line art",
+  },
+  {
+    src: "/staff/lia/lia-nails-03.jpg",
+    alt: "Lia nail art with brown sculpted tips, white accent art, and sharp graphic lines.",
+    label: "Brown graphic tips",
+  },
+  {
+    src: "/staff/lia/lia-nails-04.jpg",
+    alt: "Lia nail art with bright pink glossy nails and blue accent nails.",
+    label: "Pink and blue gloss",
+  },
+  {
+    src: "/staff/lia/lia-nails-05.jpg",
+    alt: "Lia nail art with red, pink, and white mixed designs, gems, and decorative accents.",
+    label: "Mixed pink accent set",
+  },
+  {
+    src: "/staff/lia/lia-nails-06.jpg",
+    alt: "Lia nail art with teal animal print tips, black striping, and rhinestone accents.",
+    label: "Teal animal print",
+  },
+  {
+    src: "/staff/lia/lia-nails-07.jpg",
+    alt: "Lia nail art with white sculpted tips, glitter, and 3D bow details.",
+    label: "White glitter bows",
+  },
+  {
+    src: "/staff/lia/lia-nails-08.jpg",
+    alt: "Lia nail art with hot pink and electric blue color-blocked nails.",
+    label: "Pink blue color block",
+  },
+  {
+    src: "/staff/lia/lia-nails-09.jpg",
+    alt: "Lia nail art with pink, white, and black mixed designs, rhinestones, and 3D floral accents.",
+    label: "Floral mixed design",
+  },
+  {
+    src: "/staff/lia/lia-nails-10.jpg",
+    alt: "Lia nail art with black, gold, and nude alternative details with metallic accents.",
+    label: "Black gold alt details",
+  },
+];
 
 const serenityPortfolioImages: PortfolioImage[] = [
   {
@@ -356,6 +856,9 @@ const staffSeed: Array<{ index: number; categorySlug?: ServiceCategorySlug; isMa
   { index: 15, categorySlug: "nails" },
   { index: 16, categorySlug: "nails" },
   { index: 17, categorySlug: "aesthetics" },
+  { index: 18, categorySlug: "hair" },
+  { index: 19, categorySlug: "tattoo" },
+  { index: 20 },
 ];
 
 export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug, isMascot }) => {
@@ -363,16 +866,41 @@ export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug,
   const categoryIndex = categorySlug
     ? staffSeed.filter((staff) => staff.categorySlug === categorySlug && staff.index <= index).length - 1
     : 0;
-  const colors = categorySlug ? categoryAccentRotation[categorySlug] : ["#F06BD6"];
+  const colors = categorySlug ? categoryAccentRotation[categorySlug] : ["#4DDCE5"];
+  const isPendingRole = !categorySlug && !isMascot;
+  const isLia = index === 5;
   const isJuny = index === 2;
   const isSerenity = index === 6;
   const isSurge = index === 10;
+  const isSharvelle = index === 18;
+  const isMari = index === 19;
+  const isTim = index === 20;
 
   return {
     slug: `team-member-${paddedIndex}`,
-    name: isMascot ? "Schwebels" : (publicStaffNames[index] ?? `${categoryTitles[categorySlug as ServiceCategorySlug]} ${paddedIndex}`),
-    title: isMascot ? "Mascot" : categoryTitles[categorySlug as ServiceCategorySlug],
-    bio: isMascot ? mascotBio : isJuny ? junyBio : isSerenity ? serenityBio : isSurge ? surgeBio : categoryBio[categorySlug as ServiceCategorySlug],
+    name: isMascot
+      ? "Schwebels"
+      : (publicStaffNames[index] ?? (categorySlug ? `${categoryTitles[categorySlug]} ${paddedIndex}` : `Team Member ${paddedIndex}`)),
+    title: isMascot ? "Mascot" : isPendingRole ? "Role coming soon" : categoryTitles[categorySlug as ServiceCategorySlug],
+    bio: isMascot
+      ? mascotBio
+      : isLia
+        ? liaBio
+        : isJuny
+          ? junyBio
+          : isSerenity
+            ? serenityBio
+            : isSurge
+              ? surgeBio
+              : isSharvelle
+                ? sharvelleBio
+                : isMari
+                  ? mariBio
+                  : isTim
+                    ? timBio
+                    : categorySlug
+                      ? categoryBio[categorySlug]
+                      : "This team member profile is ready for Caitlin to fill in once the role and service details are confirmed.",
     photoUrl: `/staff/team-member-${paddedIndex}.jpg`,
     serviceCategorySlugs: categorySlug ? [categorySlug] : [],
     serviceSlugs: categorySlug ? serviceSlugsByCategory[categorySlug] : [],
@@ -387,15 +915,33 @@ export const staffMembers: StaffMember[] = staffSeed.map(({ index, categorySlug,
         ],
     gallery: isMascot
       ? ["Shop dog mascot", "Schwebels story", "Tour-page cameo"]
-      : isJuny
-        ? ["Nail care", "Hair creativity", "Fast-learning beauty skills"]
-      : isSerenity
-        ? ["Nail art", "Pink and burgundy tones", "Comfortable client experience"]
+      : isLia
+        ? ["Animal print", "Alternative nails", "Y2K designs"]
+        : isJuny
+          ? ["Nail care", "Hair creativity", "Fast-learning beauty skills"]
+        : isSerenity
+          ? ["Nail art", "Pink and burgundy tones", "Comfortable client experience"]
+        : isSurge
+          ? ["Realism", "Fine details", "Personal meaningful pieces"]
+        : isMari
+          ? ["Tattoo artist", "Consultation-first requests", "Portfolio details pending"]
+        : isTim
+          ? ["Profile added", "Role to be confirmed", "Service details pending"]
+          : categorySlug
+            ? categoryGallery[categorySlug]
+            : ["Profile added", "Role to be confirmed", "Service details pending"],
+    portfolioImages: isLia ? liaPortfolioImages : isSerenity ? serenityPortfolioImages : undefined,
+    calendarColor: isJuny
+      ? "#FF3131"
       : isSurge
-        ? ["Realism", "Fine details", "Personal meaningful pieces"]
-        : categoryGallery[categorySlug as ServiceCategorySlug],
-    portfolioImages: isSerenity ? serenityPortfolioImages : undefined,
-    calendarColor: isJuny ? "#FF3131" : isSurge ? "#E23B16" : colors[categoryIndex % colors.length],
+        ? "#E23B16"
+        : isSharvelle
+          ? "#FF4FB3"
+          : isMari
+            ? "#00C8D8"
+            : isTim
+              ? "#9ADFEA"
+              : colors[categoryIndex % colors.length],
     isMascot,
   };
 });
@@ -408,6 +954,14 @@ export const productHighlights = [
   "Gift cards",
 ];
 
+export function compareStaffByName(left: Pick<StaffMember, "name" | "slug">, right: Pick<StaffMember, "name" | "slug">) {
+  return left.name.localeCompare(right.name, undefined, { sensitivity: "base" }) || left.slug.localeCompare(right.slug);
+}
+
+export function sortStaffByName<T extends Pick<StaffMember, "name" | "slug">>(members: T[]): T[] {
+  return [...members].sort(compareStaffByName);
+}
+
 export function getServiceCategoryBySlug(slug: string) {
   return serviceCategories.find((category) => category.slug === slug);
 }
@@ -417,11 +971,11 @@ export function getServicesForCategory(slug: ServiceCategorySlug) {
 }
 
 export function getFeaturedStaffForCategory(slug: ServiceCategorySlug) {
-  return staffMembers.filter((staff) => staff.serviceCategorySlugs.includes(slug));
+  return sortStaffByName(staffMembers.filter((staff) => staff.serviceCategorySlugs.includes(slug)));
 }
 
 export function getStaffForService(serviceSlug: string) {
-  return staffMembers.filter((staff) => staff.serviceSlugs.includes(serviceSlug));
+  return sortStaffByName(staffMembers.filter((staff) => staff.serviceSlugs.includes(serviceSlug)));
 }
 
 export function getStaffBySlug(slug: string) {

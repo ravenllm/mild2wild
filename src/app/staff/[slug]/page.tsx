@@ -49,6 +49,7 @@ export default async function StaffProfilePage({ params }: { params: Promise<{ s
   }
 
   const staffServices = services.filter((service) => staff.serviceSlugs.includes(service.slug));
+  const hasBookableServices = staffServices.length > 0;
   const isMascot = !!staff.isMascot;
   const theme = resolveStaffProfileTheme(staff);
   const portraitPalette = theme.palette;
@@ -103,13 +104,15 @@ export default async function StaffProfilePage({ params }: { params: Promise<{ s
             })}
             {!isMascot ? (
               <>
-                <Link
-                  href={`/book?staff=${staff.slug}`}
-                  className="inline-flex min-h-12 max-w-full items-center justify-center rounded-full border-[3px] px-5 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-black transition hover:-translate-y-0.5"
-                  style={{ background: portraitPalette.accent, borderColor: portraitPalette.ink, boxShadow: `4px 5px 0 ${portraitPalette.shadow}` }}
-                >
-                  Book with me
-                </Link>
+                {hasBookableServices ? (
+                  <Link
+                    href={`/book?staff=${staff.slug}`}
+                    className="inline-flex min-h-12 max-w-full items-center justify-center rounded-full border-[3px] px-5 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-black transition hover:-translate-y-0.5"
+                    style={{ background: portraitPalette.accent, borderColor: portraitPalette.ink, boxShadow: `4px 5px 0 ${portraitPalette.shadow}` }}
+                  >
+                    Book with me
+                  </Link>
+                ) : null}
                 <Link
                   href={`/login?staff=${staff.slug}&next=${encodeURIComponent(`/dashboard/calendar/${staff.slug}`)}`}
                   className="inline-flex min-h-12 max-w-full items-center justify-center rounded-full border-[3px] px-5 py-3 text-center text-sm font-black uppercase tracking-[0.16em] text-black transition hover:-translate-y-0.5"
@@ -130,6 +133,7 @@ export default async function StaffProfilePage({ params }: { params: Promise<{ s
             <BioPanelDecoration decorId={theme.decor.id} palette={bioPalette} />
             <p className="relative break-words text-[1.06rem] font-semibold leading-8 tracking-[0.01em] text-[#4d4543] md:text-lg">
               {bioIntro ? <span className="marker-script mr-1 text-[1.35em] font-black leading-none" style={{ color: bioPalette.deep }}>{bioIntro}</span> : null}
+              {bioIntro ? " " : null}
               {bioBody}
             </p>
           </div>
@@ -151,7 +155,7 @@ export default async function StaffProfilePage({ params }: { params: Promise<{ s
               <section className="neon-card rounded-[2rem] p-6" style={panelStyle}>
                 <h3 className="brand-display text-2xl font-black uppercase">Services offered</h3>
                 <div className="mt-5 grid max-h-[18.5rem] gap-3 overflow-y-auto overscroll-contain pr-1">
-                  {staffServices.map((service) => {
+                  {hasBookableServices ? staffServices.map((service) => {
                     return (
                       <Link
                         href={`/services/${service.categorySlug}`}
@@ -168,7 +172,11 @@ export default async function StaffProfilePage({ params }: { params: Promise<{ s
                         <p className="mt-2 text-sm text-[#6b625b]">{service.priceLabel}</p>
                       </Link>
                     );
-                  })}
+                  }) : (
+                    <div className="rounded-2xl border-[2px] p-4 text-[#4d4543]" style={innerPanelStyle}>
+                      Service details will be added once this role is confirmed.
+                    </div>
+                  )}
                 </div>
               </section>
             )}
@@ -202,20 +210,18 @@ export default async function StaffProfilePage({ params }: { params: Promise<{ s
           {staff.portfolioImages?.length ? (
             <div className="mt-6 grid max-h-[94rem] gap-4 overflow-y-auto overscroll-contain pr-1 sm:max-h-[82rem] sm:grid-cols-2 lg:max-h-[80rem] lg:grid-cols-4">
               {staff.portfolioImages.map((image) => (
-                <figure key={image.src} className="group flex max-w-full flex-col overflow-hidden rounded-[1.6rem] border-[3px]" style={portfolioTheme.cardStyle}>
-                  <div className="relative aspect-[4/5] overflow-hidden" style={{ background: portfolioTheme.imageBackground }}>
+                <figure key={image.src} className="group flex max-w-full overflow-hidden rounded-[1.6rem] border-[3px]" style={portfolioTheme.cardStyle}>
+                  <div className="relative aspect-[4/5] w-full overflow-hidden" style={{ background: portfolioTheme.imageBackground }}>
                     <Image
                       src={image.src}
                       alt={image.alt}
                       fill
+                      unoptimized
                       sizes="(min-width: 1024px) 20vw, (min-width: 640px) 45vw, 100vw"
                       className={portfolioTheme.imageClassName}
                     />
                     {portfolioTheme.overlay}
                   </div>
-                  <figcaption className="grow border-t-[3px] px-4 py-3 text-xs font-black uppercase tracking-[0.16em] text-black" style={portfolioTheme.captionStyle}>
-                    {image.label}
-                  </figcaption>
                 </figure>
               ))}
             </div>
@@ -295,7 +301,7 @@ function getPortfolioTheme(categorySlug: string, palette: ProfilePalette, portfo
       ink: palette.ink,
       shadow: palette.shadow,
       imageBackground: palette.ink,
-      imageClassName: "object-cover grayscale contrast-110 transition duration-500 group-hover:scale-105 group-hover:grayscale-0",
+      imageClassName: "object-contain grayscale contrast-110 transition duration-500 group-hover:grayscale-0",
       cardStyle: {
         borderColor: palette.ink,
         background: `linear-gradient(145deg, ${palette.ink}, ${palette.deep} 62%, ${palette.accent} 140%)`,
@@ -317,7 +323,7 @@ function getPortfolioTheme(categorySlug: string, palette: ProfilePalette, portfo
       ink: palette.ink,
       shadow: palette.shadow,
       imageBackground: "#17120F",
-      imageClassName: "object-cover contrast-110 saturate-75 transition duration-500 group-hover:scale-105 group-hover:saturate-100",
+      imageClassName: "object-contain contrast-110 saturate-75 transition duration-500 group-hover:saturate-100",
       cardStyle: {
         borderColor: "#17120F",
         background: `linear-gradient(145deg, #17120F, ${palette.deep} 70%, ${palette.soft} 150%)`,
@@ -339,7 +345,7 @@ function getPortfolioTheme(categorySlug: string, palette: ProfilePalette, portfo
       ink: palette.ink,
       shadow: palette.shadow,
       imageBackground: palette.blush,
-      imageClassName: "object-cover saturate-125 transition duration-500 group-hover:scale-105 group-hover:saturate-150",
+      imageClassName: "object-contain saturate-125 transition duration-500 group-hover:saturate-150",
       cardStyle: {
         borderColor: palette.ink,
         background: `linear-gradient(145deg, ${palette.soft}, ${palette.accent} 70%, ${palette.secondary} 130%)`,
@@ -361,7 +367,7 @@ function getPortfolioTheme(categorySlug: string, palette: ProfilePalette, portfo
       ink: palette.ink,
       shadow: palette.shadow,
       imageBackground: palette.blush,
-      imageClassName: "object-cover contrast-105 transition duration-500 group-hover:scale-105",
+      imageClassName: "object-contain contrast-105 transition duration-500",
       cardStyle: {
         borderColor: palette.ink,
         background: `linear-gradient(145deg, ${palette.soft}, ${palette.blush} 62%, ${palette.secondary} 125%)`,
@@ -383,7 +389,7 @@ function getPortfolioTheme(categorySlug: string, palette: ProfilePalette, portfo
       ink: palette.ink,
       shadow: "#A78BFA",
       imageBackground: "#F8F3FF",
-      imageClassName: "object-cover contrast-105 saturate-90 transition duration-500 group-hover:scale-105 group-hover:saturate-110",
+      imageClassName: "object-contain contrast-105 saturate-90 transition duration-500 group-hover:saturate-110",
       cardStyle: {
         borderColor: palette.ink,
         background: "linear-gradient(145deg, #FFFDF8, #F3E8FF 58%, #DFF7FF 130%)",
@@ -405,7 +411,7 @@ function getPortfolioTheme(categorySlug: string, palette: ProfilePalette, portfo
       ink: "#17120F",
       shadow: "#5B5145",
       imageBackground: "#FFF8EA",
-      imageClassName: "object-cover contrast-105 transition duration-500 group-hover:scale-105",
+      imageClassName: "object-contain contrast-105 transition duration-500",
       cardStyle: {
         borderColor: "#17120F",
         background: "linear-gradient(145deg, #FFF8EA, #F3E7D3 72%, #B7A58A 145%)",
@@ -427,7 +433,7 @@ function getPortfolioTheme(categorySlug: string, palette: ProfilePalette, portfo
       ink: palette.ink,
       shadow: "#6D5BD0",
       imageBackground: "#F0E5FF",
-      imageClassName: "object-cover contrast-105 saturate-110 transition duration-500 group-hover:scale-105 group-hover:saturate-125",
+      imageClassName: "object-contain contrast-105 saturate-110 transition duration-500 group-hover:saturate-125",
       cardStyle: {
         borderColor: palette.ink,
         background: "linear-gradient(145deg, #FFF7EA, #F0E5FF 58%, #D6FFF6 135%)",
@@ -449,7 +455,7 @@ function getPortfolioTheme(categorySlug: string, palette: ProfilePalette, portfo
       ink: palette.ink,
       shadow: "#7A6CFF",
       imageBackground: "#E4FBFF",
-      imageClassName: "object-cover contrast-110 saturate-125 transition duration-500 group-hover:scale-105 group-hover:saturate-150",
+      imageClassName: "object-contain contrast-110 saturate-125 transition duration-500 group-hover:saturate-150",
       cardStyle: {
         borderColor: palette.ink,
         background: "linear-gradient(145deg, #FFFDF8, #E4FBFF 60%, #FFB8EA 138%)",
@@ -471,7 +477,7 @@ function getPortfolioTheme(categorySlug: string, palette: ProfilePalette, portfo
       ink: palette.ink,
       shadow: palette.shadow,
       imageBackground: palette.soft,
-      imageClassName: "object-cover transition duration-500 group-hover:scale-105",
+      imageClassName: "object-contain transition duration-500",
       cardStyle: {
         borderColor: palette.ink,
         background: `linear-gradient(145deg, ${palette.soft}, ${palette.blush} 115%)`,
@@ -492,7 +498,7 @@ function getPortfolioTheme(categorySlug: string, palette: ProfilePalette, portfo
     ink: palette.ink,
     shadow: palette.shadow,
     imageBackground: "#fff7e8",
-    imageClassName: "object-cover transition duration-500 group-hover:scale-105",
+    imageClassName: "object-contain transition duration-500",
     cardStyle: {
       borderColor: palette.ink,
       background: "#fff7e8",
