@@ -16,6 +16,7 @@ export type CalendarBoardAppointment = {
   endsAt: string;
   status: string;
   source: string;
+  leadStatus?: string | null;
   notes?: string | null;
   internalNotes?: string | null;
 };

@@ -8,6 +8,7 @@ import { dashboardSessionCookieName, parseSignedDashboardSession } from "@/lib/a
 import { buildCalendarBoard, calendarActionStatuses, formatDateTimeInputInNewYork, normalizeCalendarStatus, type CalendarBoardAppointment } from "@/lib/calendar-board";
 import { buildCalendarDashboardModel } from "@/lib/calendar-access";
 import { buildDashboardLeadInbox, buildProfileEditorModel } from "@/lib/dashboard-workspace";
+import { leadWorkflowStatuses, normalizeLeadStatus } from "@/lib/lead-workflow";
 import { canEditOwnedAppointment, detectOwnedCalendarConflicts, parseCalendarLocalDateTimeInput, type OwnedCalendarAppointment } from "@/lib/owned-calendar-system";
 import { buildStaffLoginInviteMetadata, buildStaffLoginInviteRedirectTo, normalizeStaffLoginInvite } from "@/lib/staff-login-invites";
 import { serviceCategories, staffMembers } from "@/lib/studio-data";
@@ -67,6 +68,7 @@ type AppointmentRelationRow = {
   starts_at: string;
   ends_at: string;
   status: string;
+  lead_status?: string | null;
   source?: string | null;
   notes: string | null;
   internal_notes: string | null;
@@ -119,6 +121,7 @@ function mapAppointmentRow(row: AppointmentRelationRow): CalendarBoardAppointmen
     startsAt: row.starts_at,
     endsAt: row.ends_at,
     status: row.status,
+    leadStatus: row.lead_status,
     source: row.source === "booksy" || row.source === "manual" || row.source === "website" ? row.source : service?.slug ? "website" : "manual",
     notes: row.notes,
     internalNotes: row.internal_notes,
@@ -131,7 +134,7 @@ async function loadCalendarAppointments() {
 
   const { data, error } = await supabase
     .from("appointments")
-    .select("id, customer_name, customer_phone, customer_email, starts_at, ends_at, status, source, notes, internal_notes, staff_members(slug, name, title, calendar_color), services(slug, name)")
+    .select("id, customer_name, customer_phone, customer_email, starts_at, ends_at, status, lead_status, source, notes, internal_notes, staff_members(slug, name, title, calendar_color), services(slug, name)")
     .order("starts_at", { ascending: true })
     .limit(80);
 
@@ -163,7 +166,34 @@ async function updateAppointmentAction(formData: FormData) {
     return;
   }
 
+  if (action.startsWith("lead:")) {
+    const leadAction = action.slice("lead:".length);
+    const updates: Record<string, string> = { updated_at: new Date().toISOString() };
+
+    if (leadAction === "contacted") {
+      updates.lead_status = "contacted";
+    } else if (leadAction === "waiting_on_client") {
+      updates.lead_status = "waiting_on_client";
+    } else if (leadAction === "booked") {
+      updates.lead_status = "booked";
+      updates.status = "confirmed";
+    } else if (leadAction === "not_a_fit") {
+      updates.lead_status = "not_a_fit";
+      updates.status = "cancelled";
+    } else if (leadAction === "archived") {
+      updates.lead_status = "archived";
+    } else {
+      return;
+    }
+
+    await supabase.from("appointments").update(updates).eq("id", appointmentId);
+    revalidatePath("/dashboard");
+    revalidatePath(`/dashboard/calendar/${staffSlug}`);
+    return;
+  }
+
   const status = normalizeCalendarStatus(formData.get("status"));
+  const leadStatus = normalizeLeadStatus(formData.get("leadStatus"));
   const startsAtInput = String(formData.get("startsAt") ?? "").trim();
   const durationMinutes = Number.parseInt(String(formData.get("durationMinutes") ?? "60"), 10);
   const startsAt = startsAtInput ? parseCalendarLocalDateTimeInput(startsAtInput) : existingAppointment?.starts_at;
@@ -193,6 +223,7 @@ async function updateAppointmentAction(formData: FormData) {
     starts_at: startsAt,
     ends_at: endsAt,
     status,
+    lead_status: leadStatus,
     source: "manual",
     notes: notes || null,
     internal_notes: internalNotes || null,
@@ -232,6 +263,7 @@ async function createCalendarAppointmentAction(formData: FormData) {
   const clientName = String(formData.get("clientName") ?? "").trim() || (serviceId ? "Client name needed" : "Blocked time");
   const clientPhone = String(formData.get("clientPhone") ?? "").trim();
   const clientEmail = String(formData.get("clientEmail") ?? "").trim();
+  const leadStatus = normalizeLeadStatus(formData.get("leadStatus"));
   const notes = String(formData.get("notes") ?? "").trim();
   const internalNotes = String(formData.get("internalNotes") ?? "").trim();
 
@@ -246,6 +278,7 @@ async function createCalendarAppointmentAction(formData: FormData) {
     starts_at: startsAt,
     ends_at: endsAt.toISOString(),
     status: serviceId ? "confirmed" : "blocked",
+    lead_status: leadStatus,
     notes: notes || (serviceId ? null : "Blocked from dashboard."),
     internal_notes: internalNotes || notes || null,
   });
@@ -351,7 +384,7 @@ export default async function DashboardPage() {
       staff_slug: appointment.staffSlug,
       starts_at: appointment.startsAt,
       status: appointment.status,
-      lead_status: appointment.status === "requested" ? "new" : "contacted",
+      lead_status: appointment.leadStatus ?? (appointment.status === "requested" ? "new" : "contacted"),
       internal_notes: appointment.internalNotes,
       notes: appointment.notes,
     })),
@@ -365,6 +398,7 @@ export default async function DashboardPage() {
   const primaryCalendarLabel = dashboardModel.canManageAllCalendars ? "Open Caitlin's calendar" : "Open my calendar";
   return (
     <PageShell>
+      <div className="admin-studio">
       <div className="fixed inset-x-4 bottom-5 z-50 mx-auto hidden max-w-3xl flex-wrap items-center justify-center gap-3 rounded-[2rem] border border-cyan-200/40 bg-black/90 p-3 shadow-2xl shadow-cyan-400/25 backdrop-blur md:bottom-8 md:flex">
         <Link href="#calendar-board" className="rounded-full bg-cyan-200 px-5 py-3 text-xs font-black uppercase tracking-[0.16em] text-black transition hover:bg-white sm:text-sm">
           Open all calendars ↓
@@ -412,7 +446,7 @@ export default async function DashboardPage() {
                 {identityChipLabel}
               </p>
             </div>
-            <form action={logoutAction}>
+            <form action={logoutAction} className="admin-action-form">
               <button className="rounded-full border border-white/15 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-white/75 transition hover:bg-white hover:text-black" type="submit">
                 Log out
               </button>
@@ -512,6 +546,35 @@ export default async function DashboardPage() {
                     {lead.ownerAlertLabel}
                   </p>
                 ) : null}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <a href={`#appointment-${lead.id}`} className="rounded-full bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-black transition hover:bg-yellow-200">
+                    Edit request
+                  </a>
+                  <form action={updateAppointmentAction}>
+                    <input type="hidden" name="appointmentId" value={lead.id} />
+                    <button name="action" value="lead:contacted" type="submit" className="rounded-full bg-cyan-200 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-black transition hover:bg-white">
+                      Mark contacted
+                    </button>
+                  </form>
+                  <form action={updateAppointmentAction}>
+                    <input type="hidden" name="appointmentId" value={lead.id} />
+                    <button name="action" value="lead:booked" type="submit" className="rounded-full bg-purple-300 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-black transition hover:bg-white">
+                      Confirm / added to calendar
+                    </button>
+                  </form>
+                  <form action={updateAppointmentAction}>
+                    <input type="hidden" name="appointmentId" value={lead.id} />
+                    <button name="action" value="lead:waiting_on_client" type="submit" className="rounded-full bg-yellow-200 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-black transition hover:bg-white">
+                      Waiting reply
+                    </button>
+                  </form>
+                  <form action={updateAppointmentAction}>
+                    <input type="hidden" name="appointmentId" value={lead.id} />
+                    <button name="action" value="lead:archived" type="submit" className="rounded-full border border-white/20 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-white/80 transition hover:bg-white hover:text-black">
+                      Archive
+                    </button>
+                  </form>
+                </div>
               </div>
             ))}
           </div>
@@ -705,6 +768,7 @@ export default async function DashboardPage() {
                         <span className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-lg leading-none text-white/90">⌄</span>
                       </span>
                     </div>
+                    <input type="hidden" name="leadStatus" value="new" />
                     <input name="notes" placeholder="Client/request note or blocked-time reason" className="mt-3 w-full min-w-0 rounded-2xl border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none placeholder:text-white/35 focus:border-cyan-300" />
                     <input name="internalNotes" placeholder="Private staff/admin note" className="mt-3 w-full min-w-0 rounded-2xl border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none placeholder:text-white/35 focus:border-cyan-300" />
                     <label className="mt-3 flex items-start gap-2 text-xs font-bold leading-5 text-white/45">
@@ -719,7 +783,7 @@ export default async function DashboardPage() {
                   {lane.appointments.length === 0 ? (
                     <div className="rounded-3xl border border-dashed border-white/15 bg-black/40 p-5 text-sm leading-6 text-white/55">No appointments in this lane yet.</div>
                   ) : lane.appointments.map((appointment) => (
-                    <div key={appointment.id} className="min-w-0 rounded-3xl border border-white/10 bg-black/55 p-4">
+                    <div id={`appointment-${appointment.id}`} key={appointment.id} className="min-w-0 scroll-mt-28 rounded-3xl border border-white/10 bg-black/55 p-4">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className={`rounded-full px-3 py-1 text-[0.62rem] font-black uppercase tracking-[0.16em] ${appointment.statusTone}`}>{appointment.statusLabel}</span>
                         <span className="rounded-full border border-white/10 px-3 py-1 text-[0.62rem] font-black uppercase tracking-[0.16em] text-white/55">{appointment.source}</span>
@@ -737,6 +801,14 @@ export default async function DashboardPage() {
                             <span className="relative min-w-0">
                               <select name="status" defaultValue={appointment.status} className="w-full min-w-0 appearance-none rounded-2xl border border-white/10 bg-black py-2 pl-3 pr-12 text-sm text-white outline-none focus:border-pink-300">
                                 {calendarActionStatuses.map((status) => (
+                                  <option key={status} value={status}>{status.replace(/_/g, " ")}</option>
+                                ))}
+                              </select>
+                              <span className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-lg leading-none text-white/90">⌄</span>
+                            </span>
+                            <span className="relative min-w-0">
+                              <select name="leadStatus" defaultValue={appointment.leadStatus ?? (appointment.status === "requested" ? "new" : "contacted")} className="w-full min-w-0 appearance-none rounded-2xl border border-white/10 bg-black py-2 pl-3 pr-12 text-sm text-white outline-none focus:border-pink-300">
+                                {leadWorkflowStatuses.map((status) => (
                                   <option key={status} value={status}>{status.replace(/_/g, " ")}</option>
                                 ))}
                               </select>
@@ -782,6 +854,7 @@ export default async function DashboardPage() {
           })}
         </div>
       </section>
+      </div>
     </PageShell>
   );
 }
