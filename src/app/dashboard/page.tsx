@@ -3,10 +3,12 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
+import { BooksyClientImportPanel } from "@/components/booksy-client-import-panel";
 import { PageShell, SectionEyebrow } from "@/components/site";
 import { dashboardSessionCookieName, parseSignedDashboardSession } from "@/lib/auth-session";
 import { buildCalendarBoard, calendarActionStatuses, formatDateTimeInputInNewYork, normalizeCalendarStatus, type CalendarBoardAppointment } from "@/lib/calendar-board";
 import { buildCalendarDashboardModel } from "@/lib/calendar-access";
+import { fallbackBooksyClientExternalId, summarizeBooksyClientImport } from "@/lib/booksy-client-import";
 import { buildDashboardLeadInbox, buildProfileEditorModel } from "@/lib/dashboard-workspace";
 import { leadWorkflowStatuses, normalizeLeadStatus } from "@/lib/lead-workflow";
 import { canEditOwnedAppointment, detectOwnedCalendarConflicts, parseCalendarLocalDateTimeInput, type OwnedCalendarAppointment } from "@/lib/owned-calendar-system";
@@ -75,6 +77,20 @@ type AppointmentRelationRow = {
   staff_members?: { slug?: string | null; name?: string | null; title?: string | null; calendar_color?: string | null } | { slug?: string | null; name?: string | null; title?: string | null; calendar_color?: string | null }[] | null;
   services?: { slug?: string | null; name?: string | null } | { slug?: string | null; name?: string | null }[] | null;
 };
+type ClientDirectoryRow = {
+  id: string;
+  full_name: string;
+  phone: string | null;
+  email: string | null;
+  source: string | null;
+  external_source: string | null;
+  external_id: string | null;
+  notes: string | null;
+  updated_at?: string | null;
+};
+
+const fallbackClientDirectory: ClientDirectoryRow[] = [];
+
 
 function firstRelation<T>(value: T | T[] | null | undefined) {
   return Array.isArray(value) ? value[0] : value;
@@ -141,6 +157,79 @@ async function loadCalendarAppointments() {
   if (error) return fallbackCalendarAppointments;
   const mapped = ((data ?? []) as AppointmentRelationRow[]).map(mapAppointmentRow).filter((row): row is CalendarBoardAppointment => Boolean(row));
   return mapped.length > 0 ? mapped : fallbackCalendarAppointments;
+}
+
+async function loadClientDirectory(sessionRole: string) {
+  if (sessionRole !== "owner") return [];
+  const supabase = createSupabaseServerClient();
+  if (!supabase) return fallbackClientDirectory;
+
+  const { data, error } = await supabase
+    .from("clients")
+    .select("id, full_name, phone, email, source, external_source, external_id, notes, updated_at")
+    .order("updated_at", { ascending: false })
+    .limit(60);
+
+  if (error) return fallbackClientDirectory;
+  const clients = (data ?? []) as ClientDirectoryRow[];
+  return clients.length > 0 ? clients : fallbackClientDirectory;
+}
+
+async function importBooksyClientsAction(formData: FormData) {
+  "use server";
+
+  const session = await readDashboardSession();
+  if (!session) redirect("/login");
+  if (session.role !== "owner") return;
+
+  const csvText = String(formData.get("booksyClientCsv") ?? "").trim();
+  if (!csvText) redirect("/dashboard?booksyClients=empty#client-directory");
+
+  const supabase = createSupabaseServerClient();
+  if (!supabase) redirect("/dashboard?booksyClients=unavailable#client-directory");
+
+  const { data: existingData } = await supabase.from("clients").select("id, full_name, phone, email, source, external_source, external_id, notes").limit(5000);
+  const existingClients = (existingData ?? []) as ClientDirectoryRow[];
+  const summary = summarizeBooksyClientImport(csvText, existingClients, 500);
+  if (summary.importableRows === 0) redirect("/dashboard?booksyClients=empty#client-directory");
+
+  const byBooksyId = new Map(existingClients.filter((client) => client.external_source === "booksy" && client.external_id).map((client) => [client.external_id!.trim().toLowerCase(), client]));
+  const byPhone = new Map(existingClients.filter((client) => client.phone).map((client) => [client.phone!.replace(/\D+/g, ""), client]));
+  const byEmail = new Map(existingClients.filter((client) => client.email).map((client) => [client.email!.trim().toLowerCase(), client]));
+  const byName = new Map(existingClients.map((client) => [client.full_name.trim().toLowerCase().replace(/\s+/g, " "), client]));
+
+  for (const row of summary.rows) {
+    const phoneKey = row.phone?.replace(/\D+/g, "") ?? "";
+    const emailKey = row.email?.trim().toLowerCase() ?? "";
+    const nameKey = row.fullName.trim().toLowerCase().replace(/\s+/g, " ");
+    const matched = (row.externalId ? byBooksyId.get(row.externalId.trim().toLowerCase()) : undefined) ?? (phoneKey ? byPhone.get(phoneKey) : undefined) ?? (emailKey ? byEmail.get(emailKey) : undefined) ?? byName.get(nameKey);
+    const payload = {
+      full_name: row.fullName || matched?.full_name || "Booksy client",
+      phone: row.phone || matched?.phone || null,
+      email: row.email || matched?.email || null,
+      source: "booksy",
+      external_source: "booksy",
+      external_id: row.externalId || matched?.external_id || fallbackBooksyClientExternalId(row),
+      notes: row.notes || matched?.notes || null,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (matched?.id) {
+      await supabase.from("clients").update(payload).eq("id", matched.id);
+    } else {
+      const { data: inserted } = await supabase.from("clients").insert(payload).select("id, full_name, phone, email, source, external_source, external_id, notes").single();
+      const insertedClient = inserted as ClientDirectoryRow | null;
+      if (insertedClient) {
+        if (insertedClient.external_id) byBooksyId.set(insertedClient.external_id.trim().toLowerCase(), insertedClient);
+        if (insertedClient.phone) byPhone.set(insertedClient.phone.replace(/\D+/g, ""), insertedClient);
+        if (insertedClient.email) byEmail.set(insertedClient.email.trim().toLowerCase(), insertedClient);
+        byName.set(insertedClient.full_name.trim().toLowerCase().replace(/\s+/g, " "), insertedClient);
+      }
+    }
+  }
+
+  revalidatePath("/dashboard");
+  redirect("/dashboard?booksyClients=imported#client-directory");
 }
 
 async function updateAppointmentAction(formData: FormData) {
@@ -356,17 +445,24 @@ async function inviteStaffLoginAction(formData: FormData) {
   redirect(`/dashboard?inviteLogin=sent&staff=${normalized.staff.slug}#profile-controls`);
 }
 
-export default async function DashboardPage() {
+type DashboardPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
   const session = await readDashboardSession();
 
   if (!session) {
     redirect("/login");
   }
 
-  const [mergedStaffMembers, calendarAppointments] = await Promise.all([
+  const [mergedStaffMembers, calendarAppointments, clientDirectory] = await Promise.all([
     readStoredStaffMembers(staffMembers),
     loadCalendarAppointments(),
+    loadClientDirectory(session.role),
   ]);
+  const resolvedSearchParams = await searchParams;
+  const booksyImportStatus = typeof resolvedSearchParams?.booksyClients === "string" ? resolvedSearchParams.booksyClients : undefined;
   const bookableStaffMembers = mergedStaffMembers.filter((staff) => !staff.isMascot);
   const dashboardModel = buildCalendarDashboardModel(session, bookableStaffMembers);
   const calendarBoard = buildCalendarBoard({ session, staffMembers: mergedStaffMembers, appointments: calendarAppointments });
@@ -677,6 +773,41 @@ export default async function DashboardPage() {
           </div>
         </article>
       </section>
+
+      {session.role === "owner" ? (
+        <section id="client-directory" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-10">
+          <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+            <BooksyClientImportPanel action={importBooksyClientsAction} existingClients={clientDirectory} importStatus={booksyImportStatus} />
+
+            <article className="neon-card rounded-[2rem] p-6" style={{ boxShadow: "0 0 70px #FFE45C22" }}>
+              <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end">
+                <div>
+                  <SectionEyebrow color="#FFE45C">Client directory</SectionEyebrow>
+                  <h2 className="brand-display text-4xl font-black uppercase">Private client list.</h2>
+                  <p className="mt-3 text-sm leading-6 text-white/60">Caitlin can review imported Booksy clients, contact details, and private notes before cancelling Booksy.</p>
+                </div>
+                <span className="rounded-full bg-yellow-200 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-black">{clientDirectory.length} clients</span>
+              </div>
+              <div className="mt-6 max-h-[34rem] space-y-3 overflow-y-auto pr-2 [scrollbar-color:#FFE45C_rgba(255,255,255,0.08)]">
+                {clientDirectory.length === 0 ? (
+                  <div className="rounded-3xl border border-dashed border-white/15 bg-black/40 p-5 text-sm leading-6 text-white/58">No clients imported yet. Export clients from Booksy, paste the CSV, and review them here.</div>
+                ) : clientDirectory.map((client) => (
+                  <article key={client.id} className="rounded-3xl border border-white/10 bg-black/50 p-4">
+                    <div className="flex flex-col justify-between gap-3 md:flex-row md:items-start">
+                      <div className="min-w-0">
+                        <h3 className="truncate text-xl font-black text-white">{client.full_name}</h3>
+                        <p className="mt-1 break-words text-sm text-white/55">{[client.phone, client.email].filter(Boolean).join(" · ") || "No contact saved"}</p>
+                      </div>
+                      <span className="rounded-full border border-white/10 px-3 py-1 text-[0.62rem] font-black uppercase tracking-[0.16em] text-white/55">{client.source || "manual"}</span>
+                    </div>
+                    {client.notes ? <p className="mt-3 whitespace-pre-line rounded-2xl border border-purple-200/15 bg-purple-200/10 px-4 py-3 text-sm leading-6 text-white/65">{client.notes}</p> : null}
+                  </article>
+                ))}
+              </div>
+            </article>
+          </div>
+        </section>
+      ) : null}
 
       <section id="calendar-board" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-10">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">

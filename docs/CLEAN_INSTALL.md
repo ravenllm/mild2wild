@@ -5,7 +5,7 @@ Use this checklist when setting up Mild 2 Wild on a fresh machine, Supabase proj
 ## 1. Local machine
 
 ```bash
-git clone https://github.com/tyleradams69/mild2wild.git
+git clone https://github.com/ravenllm/mild2wild.git
 cd mild2wild
 npm install
 cp .env.example .env.local
