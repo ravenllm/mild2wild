@@ -4,15 +4,24 @@ export const businessName = process.env.NEXT_PUBLIC_BUSINESS_NAME ?? "Mild 2 Wil
 export const businessDescription =
   "A colorful tattoo, nail, hair, aesthetics, spa, and retail studio where guests can explore services, meet the team, and request appointments online.";
 
-export const businessPhone = process.env.NEXT_PUBLIC_BUSINESS_PHONE;
-export const businessEmail = process.env.NEXT_PUBLIC_BUSINESS_EMAIL;
-export const businessStreetAddress = process.env.NEXT_PUBLIC_BUSINESS_STREET_ADDRESS;
-export const businessCity = process.env.NEXT_PUBLIC_BUSINESS_CITY;
-export const businessRegion = process.env.NEXT_PUBLIC_BUSINESS_REGION;
-export const businessPostalCode = process.env.NEXT_PUBLIC_BUSINESS_POSTAL_CODE;
+export const businessPhone = process.env.NEXT_PUBLIC_BUSINESS_PHONE ?? "+14406547085";
+export const businessPhoneDisplay = "(440) 654-7085";
+export const businessEmail = process.env.NEXT_PUBLIC_BUSINESS_EMAIL || undefined;
+export const businessStreetAddress = process.env.NEXT_PUBLIC_BUSINESS_STREET_ADDRESS ?? "1139 Tower Blvd";
+export const businessCity = process.env.NEXT_PUBLIC_BUSINESS_CITY ?? "Lorain";
+export const businessRegion = process.env.NEXT_PUBLIC_BUSINESS_REGION ?? "OH";
+export const businessPostalCode = process.env.NEXT_PUBLIC_BUSINESS_POSTAL_CODE ?? "44052";
 export const businessCountry = process.env.NEXT_PUBLIC_BUSINESS_COUNTRY ?? "US";
 export const businessLatitude = process.env.NEXT_PUBLIC_BUSINESS_LATITUDE;
 export const businessLongitude = process.env.NEXT_PUBLIC_BUSINESS_LONGITUDE;
+
+export const businessAddressDisplay = `${businessStreetAddress}, ${businessCity}, ${businessRegion} ${businessPostalCode}`;
+export const regularBusinessHours = [
+  { label: "Monday-Friday", value: "9:00 AM-6:00 PM" },
+  { label: "Saturday", value: "10:00 AM-3:00 PM" },
+];
+export const holidayBusinessHours =
+  "Closed New Year's Day, Christmas Eve, Christmas Day, Memorial Day, Labor Day, and Thanksgiving Day. New Year's Eve follows Saturday hours.";
 
 export const socialProfileUrls = [
   process.env.NEXT_PUBLIC_FACEBOOK_URL,
@@ -64,6 +73,20 @@ export function buildLocalBusinessJsonLd() {
     sameAs: socialProfileUrls,
     areaServed: businessCity && businessRegion ? `${businessCity}, ${businessRegion}` : "Local salon, tattoo, and spa guests",
     priceRange: "$$",
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "09:00",
+        closes: "18:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: "Saturday",
+        opens: "10:00",
+        closes: "15:00",
+      },
+    ],
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: `${businessName} services`,

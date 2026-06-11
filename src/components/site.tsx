@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import type { ServiceCategory, StaffMember } from "@/lib/studio-data";
+import { businessAddressDisplay, businessPhone, businessPhoneDisplay, holidayBusinessHours, regularBusinessHours } from "@/lib/seo";
 import { serviceCategories } from "@/lib/studio-data";
 
 
@@ -122,6 +123,27 @@ export function SiteFooter() {
         <p className="brand-display paint-outline text-4xl uppercase text-pink-300">Mild 2 Wild</p>
         <p className="marker-script mt-3 text-lg text-yellow-100">Tattoos • Nails • Hair • Aesthetics • Spa • Products</p>
         <p className="mx-auto mt-4 max-w-2xl text-white/70">A pastel-rainbow studio home for custom ink, wild sets, vivid color, spa care, staff profiles, booking requests, policies, and retail favorites.</p>
+        <div className="mx-auto mt-6 grid max-w-4xl gap-3 rounded-[2rem] border-2 border-white/25 bg-black/25 p-4 text-left text-white/78 md:grid-cols-3">
+          <div>
+            <p className="text-[0.65rem] font-black uppercase tracking-[0.18em] text-pink-100">Call</p>
+            <a href={`tel:${businessPhone}`} className="mt-1 block font-black text-white underline-offset-4 hover:underline">
+              {businessPhoneDisplay}
+            </a>
+          </div>
+          <div>
+            <p className="text-[0.65rem] font-black uppercase tracking-[0.18em] text-cyan-100">Visit</p>
+            <p className="mt-1 font-bold leading-6">{businessAddressDisplay}</p>
+          </div>
+          <div>
+            <p className="text-[0.65rem] font-black uppercase tracking-[0.18em] text-yellow-100">Hours</p>
+            <ul className="mt-1 space-y-1 font-bold leading-6">
+              {regularBusinessHours.map((hours) => (
+                <li key={hours.label}>{hours.label}: {hours.value}</li>
+              ))}
+            </ul>
+          </div>
+          <p className="text-xs font-bold leading-5 text-white/62 md:col-span-3">{holidayBusinessHours}</p>
+        </div>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {footerLinks.map(([label, href]) => (
             <Link key={href} href={href} className="rounded-full border-2 border-white/70 bg-white px-4 py-2 font-black uppercase tracking-[0.18em] text-black shadow-[4px_5px_0_#000] transition hover:-translate-y-0.5 hover:bg-pink-200">
