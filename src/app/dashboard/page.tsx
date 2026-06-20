@@ -497,7 +497,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       <div className="admin-studio">
       <div className="fixed inset-x-4 bottom-5 z-50 mx-auto hidden max-w-3xl flex-wrap items-center justify-center gap-3 rounded-[2rem] border border-cyan-200/40 bg-black/90 p-3 shadow-2xl shadow-cyan-400/25 backdrop-blur md:bottom-8 md:flex">
         <Link href="#calendar-board" className="rounded-full bg-cyan-200 px-5 py-3 text-xs font-black uppercase tracking-[0.16em] text-black transition hover:bg-white sm:text-sm">
-          Open all calendars ↓
+          Staff calendars ↓
         </Link>
         <Link href={primaryCalendarHref} className="rounded-full bg-purple-300 px-5 py-3 text-xs font-black uppercase tracking-[0.16em] text-black transition hover:bg-white sm:text-sm">
           {primaryCalendarLabel} →
@@ -506,17 +506,20 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       <section className="mx-auto max-w-7xl px-5 py-16">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-start">
           <div>
-            <SectionEyebrow color="#A95CFF">Admin + staff portal</SectionEyebrow>
-            <h1 className="brand-display max-w-5xl text-5xl font-black uppercase md:text-7xl">Calendar buttons are live.</h1>
+            <SectionEyebrow color="#A95CFF">Caitlin&apos;s admin</SectionEyebrow>
+            <h1 className="brand-display max-w-5xl text-5xl font-black uppercase md:text-7xl">Start simple.</h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-white/65">
-              Signed sessions now separate owner/admin access from individual employee logins. The owner can manage every calendar; employees can only edit their own schedule lane.
+              The important work is up top: check website booking requests first, open Caitlin&apos;s calendar when needed, and use staff profiles for quick edits. Extra tools stay tucked away.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="#calendar-board" className="rounded-full bg-cyan-200 px-6 py-4 text-sm font-black uppercase tracking-[0.18em] text-black shadow-lg shadow-cyan-400/20 transition hover:scale-[1.02] hover:bg-white">
-                Open all calendars ↓
+              <Link href="#booking-requests" className="rounded-full bg-yellow-200 px-6 py-4 text-sm font-black uppercase tracking-[0.18em] text-black shadow-lg shadow-yellow-400/20 transition hover:scale-[1.02] hover:bg-white">
+                Check requests
               </Link>
-              <Link href={primaryCalendarHref} className="rounded-full border border-white/15 px-6 py-4 text-sm font-black uppercase tracking-[0.18em] text-white/80 transition hover:bg-white hover:text-black">
+              <Link href={primaryCalendarHref} className="rounded-full bg-cyan-200 px-6 py-4 text-sm font-black uppercase tracking-[0.18em] text-black shadow-lg shadow-cyan-400/20 transition hover:scale-[1.02] hover:bg-white">
                 {primaryCalendarLabel} →
+              </Link>
+              <Link href="#profile-controls" className="rounded-full border border-white/15 px-6 py-4 text-sm font-black uppercase tracking-[0.18em] text-white/80 transition hover:bg-white hover:text-black">
+                Staff profiles
               </Link>
             </div>
           </div>
@@ -568,7 +571,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <Link href="#calendar-board" className="rounded-full bg-cyan-200 px-5 py-3 text-xs font-black uppercase tracking-[0.18em] text-black transition hover:bg-white">
-                Open all calendars ↓
+                Staff calendars ↓
               </Link>
               <Link href={primaryCalendarHref} className="rounded-full border border-purple-200/45 bg-purple-300 px-5 py-3 text-xs font-black uppercase tracking-[0.18em] text-black transition hover:bg-white">
                 {primaryCalendarLabel} →
@@ -592,14 +595,14 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-6 px-5 py-10 lg:grid-cols-[1.2fr_0.8fr]">
+      <section id="booking-requests" className="mx-auto grid max-w-7xl gap-6 px-5 py-10 lg:grid-cols-[1.2fr_0.8fr]">
         <article className="neon-card rounded-[2rem] p-6" style={{ boxShadow: "0 0 70px #FFE45C22" }}>
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
               <SectionEyebrow color="#FFE45C">Lead inbox</SectionEyebrow>
-              <h2 className="brand-display text-4xl font-black uppercase">Website booking requests.</h2>
+              <h2 className="brand-display text-4xl font-black uppercase">New booking requests.</h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-white/60">
-                Public website booking requests land in one routed queue so Caitlin can see who needs a follow-up and which staff lane owns it.
+                Start here. These are the only items that need a follow-up decision; everything else can wait.
               </p>
             </div>
             <span className="rounded-full bg-yellow-200 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-black">{leadInbox.length} open</span>
@@ -685,7 +688,9 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
               : "Staff accounts do not edit public profiles. Caitlin handles bios, portfolio uploads, colors, and templates from the admin account."}
           </p>
           {profileEditorModel.canManageAllProfiles ? (
-            <form action={createStaffProfileAction} className="mt-6 rounded-[1.6rem] border border-pink-200/20 bg-white/[0.04] p-4">
+            <details className="mt-6 rounded-[1.6rem] border border-pink-200/20 bg-white/[0.04] p-4">
+              <summary className="cursor-pointer text-xs font-black uppercase tracking-[0.18em] text-pink-100/70">Setup tool: add a new staff profile</summary>
+              <form action={createStaffProfileAction} className="mt-4">
               <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end">
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.2em] text-pink-100/60">New staff template</p>
@@ -738,7 +743,8 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
                 </label>
               </div>
               <p className="mt-3 text-xs font-bold leading-5 text-white/45">After creating, Caitlin lands on the regular profile editor to add portfolio showcase rows and polish the page.</p>
-            </form>
+              </form>
+            </details>
           ) : null}
           <div id="profile-controls" className="mt-6 max-h-[34rem] space-y-3 overflow-y-auto pr-2 [scrollbar-color:#FF8AC8_rgba(255,255,255,0.08)]">
             {profileEditorModel.editableProfiles.length === 0 ? (
@@ -757,17 +763,17 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
                     Edit profile
                   </Link>
                 </div>
-                <form action={inviteStaffLoginAction} className="mt-4 rounded-2xl border border-cyan-200/15 bg-black/35 p-3">
-                  <input type="hidden" name="staffSlug" value={profile.slug} />
-                  <p className="text-[0.66rem] font-black uppercase tracking-[0.18em] text-cyan-100/60">Invite login</p>
-                  <p className="mt-1 text-xs leading-5 text-white/45">Send this employee a Supabase invite locked to this exact public profile. They cannot choose or switch profiles.</p>
-                  <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                <details className="mt-4 rounded-2xl border border-cyan-200/15 bg-black/35 p-3">
+                  <summary className="cursor-pointer text-[0.66rem] font-black uppercase tracking-[0.18em] text-cyan-100/60">Invite login</summary>
+                  <p className="mt-2 text-xs leading-5 text-white/45">Send this employee a Supabase invite locked to this exact public profile. They cannot choose or switch profiles.</p>
+                  <form action={inviteStaffLoginAction} className="mt-3 flex flex-col gap-2 sm:flex-row">
+                    <input type="hidden" name="staffSlug" value={profile.slug} />
                     <input name="email" type="email" required placeholder={`${profile.name}'s email`} className="min-w-0 flex-1 rounded-2xl border border-white/10 bg-black px-3 py-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-cyan-200/60" />
                     <button type="submit" className="rounded-full bg-cyan-200 px-4 py-3 text-xs font-black uppercase tracking-[0.16em] text-black transition hover:bg-white">
                       Send invite
                     </button>
-                  </div>
-                </form>
+                  </form>
+                </details>
               </article>
             ))}
           </div>
@@ -776,15 +782,41 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
       {session.role === "owner" ? (
         <section id="client-directory" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-10">
-          <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+          <details className="neon-card rounded-[2rem] p-6" style={{ boxShadow: "0 0 70px #FFE45C22" }}>
+            <summary className="cursor-pointer list-none">
+              <SectionEyebrow color="#FFE45C">Client tools</SectionEyebrow>
+              <div className="mt-2 flex flex-col justify-between gap-3 md:flex-row md:items-end">
+                <div>
+                  <h2 className="brand-display text-4xl font-black uppercase">Private client list.</h2>
+                  <p className="mt-3 text-sm leading-6 text-white/60">This stays tucked away because Caitlin only needs it for Booksy cleanup or client lookup — not everyday booking checks.</p>
+                </div>
+                <span className="rounded-full bg-yellow-200 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-black">Open client tools</span>
+              </div>
+            </summary>
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            <div className="rounded-3xl border border-yellow-200/15 bg-yellow-200/10 p-4">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-yellow-100/75">Use this for</p>
+              <p className="mt-2 text-sm leading-6 text-white/65">Looking up imported clients, checking private notes, or doing a Booksy import before the final cutover.</p>
+            </div>
+            <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-white/45">Everyday workflow</p>
+              <p className="mt-2 text-sm leading-6 text-white/65">Booking requests and calendars above are still the main work area.</p>
+            </div>
+            <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-white/45">Safe by default</p>
+              <p className="mt-2 text-sm leading-6 text-white/65">Import stays behind a preview step before anything is saved.</p>
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
             <BooksyClientImportPanel action={importBooksyClientsAction} existingClients={clientDirectory} importStatus={booksyImportStatus} />
 
             <article className="neon-card rounded-[2rem] p-6" style={{ boxShadow: "0 0 70px #FFE45C22" }}>
               <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end">
                 <div>
-                  <SectionEyebrow color="#FFE45C">Client directory</SectionEyebrow>
-                  <h2 className="brand-display text-4xl font-black uppercase">Private client list.</h2>
-                  <p className="mt-3 text-sm leading-6 text-white/60">Caitlin can review imported Booksy clients, contact details, and private notes before cancelling Booksy.</p>
+                  <SectionEyebrow color="#FFE45C">Saved clients</SectionEyebrow>
+                  <h2 className="brand-display text-4xl font-black uppercase">Lookup list.</h2>
+                  <p className="mt-3 text-sm leading-6 text-white/60">A private reference list for imported Booksy clients, contact details, and notes.</p>
                 </div>
                 <span className="rounded-full bg-yellow-200 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-black">{clientDirectory.length} clients</span>
               </div>
@@ -806,18 +838,19 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
               </div>
             </article>
           </div>
+          </details>
         </section>
       ) : null}
 
       <section id="calendar-board" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-10">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
-            <SectionEyebrow color="#4DDCE5">Calendar board</SectionEyebrow>
+            <SectionEyebrow color="#4DDCE5">Calendars</SectionEyebrow>
             <h2 className="brand-display max-w-4xl text-4xl font-black uppercase md:text-6xl">
-              {dashboardModel.canManageAllCalendars ? "Manage every staff calendar." : "Manage your own calendar lane."}
+              {dashboardModel.canManageAllCalendars ? "Staff schedules, when you need them." : "Your schedule, in one place."}
             </h2>
             <p className="mt-4 max-w-3xl text-sm leading-6 text-white/60">
-              Real appointment/request rows are grouped by staff. Editable lanes can update appointment status, save owner/staff notes, and block time without exposing another employee&apos;s calendar controls.
+              Start with new booking requests above. Use these calendar cards when you need to check a staff schedule, open a focused calendar, or add time manually.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -830,7 +863,17 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           </div>
         </div>
 
-        <div className="mt-8 grid items-start gap-5 xl:grid-cols-3">
+        <details className="mt-8 rounded-[2rem] border border-cyan-200/20 bg-black/45 p-4 shadow-2xl shadow-cyan-400/10" open={!dashboardModel.canManageAllCalendars}>
+          <summary className="flex cursor-pointer list-none flex-col justify-between gap-3 rounded-[1.5rem] border border-white/10 bg-white/5 p-4 md:flex-row md:items-center">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-100/70">Staff calendar cards</p>
+              <h3 className="brand-display mt-1 text-2xl font-black uppercase">Show all staff schedules</h3>
+              <p className="mt-2 text-sm leading-6 text-white/55">Collapsed for Caitlin by default so the dashboard stays focused on requests and her main calendar.</p>
+            </div>
+            <span className="rounded-full bg-cyan-200 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-black">Open section</span>
+          </summary>
+
+        <div className="mt-5 grid items-start gap-5 xl:grid-cols-3">
           {calendarBoard.visibleLanes.map((lane) => {
             const staff = mergedStaffMembers.find((item) => item.slug === lane.staffSlug);
             const category = serviceCategories.find((item) => item.slug === staff?.serviceCategorySlugs[0]);
@@ -869,9 +912,10 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
                 </p>
 
                 {lane.canEdit ? (
-                  <form action={createCalendarAppointmentAction} className="mt-5 rounded-3xl border border-white/10 bg-white/5 p-4">
+                  <details className="mt-5 rounded-3xl border border-white/10 bg-white/5 p-4">
+                    <summary className="cursor-pointer text-xs font-black uppercase tracking-[0.18em] text-white/60">Add appointment or block time</summary>
+                    <form action={createCalendarAppointmentAction} className="mt-4">
                     <input type="hidden" name="staffSlug" value={lane.staffSlug} />
-                    <p className="text-xs font-black uppercase tracking-[0.18em] text-white/50">Add appointment or block time</p>
                     <div className="mt-3 grid gap-3">
                       <span className="relative min-w-0">
                         <select name="serviceSlug" defaultValue="" className="w-full min-w-0 appearance-none rounded-2xl border border-white/10 bg-black py-2 pl-3 pr-12 text-sm text-white outline-none focus:border-cyan-300">
@@ -907,7 +951,8 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
                       Allow overlap if this double-booking is intentional.
                     </label>
                     <button type="submit" className="mt-3 rounded-full bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-black transition hover:bg-cyan-200">Add to calendar</button>
-                  </form>
+                    </form>
+                  </details>
                 ) : null}
 
                 <div className="mt-5 max-h-[34rem] min-h-[18rem] space-y-3 overflow-y-auto pr-2 [scrollbar-color:#4DDCE5_rgba(255,255,255,0.08)]">
@@ -926,7 +971,9 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
                       {appointment.notes ? <p className="mt-3 text-sm leading-6 text-white/60">{appointment.notes}</p> : null}
 
                       {appointment.canEdit ? (
-                        <form action={updateAppointmentAction} className="mt-4 min-w-0 rounded-2xl border border-white/10 bg-white/5 p-3">
+                        <details className="mt-4 min-w-0 rounded-2xl border border-white/10 bg-white/5 p-3">
+                          <summary className="cursor-pointer text-xs font-black uppercase tracking-[0.16em] text-white/60">Edit this appointment</summary>
+                          <form action={updateAppointmentAction} className="mt-3">
                           <input type="hidden" name="appointmentId" value={appointment.id} />
                           <div className="grid min-w-0 gap-3">
                             <span className="relative min-w-0">
@@ -975,7 +1022,8 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
                             <button name="action" value="update" type="submit" className="rounded-full bg-pink-300 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-black transition hover:bg-white">Save changes</button>
                             <button name="action" value="delete" type="submit" className="rounded-full border border-red-200/45 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-red-100 transition hover:bg-red-200 hover:text-black">Remove</button>
                           </div>
-                        </form>
+                          </form>
+                        </details>
                       ) : null}
                     </div>
                   ))}
@@ -984,6 +1032,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
             );
           })}
         </div>
+        </details>
       </section>
       </div>
     </PageShell>
