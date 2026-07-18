@@ -146,6 +146,7 @@ describe("booking foundation", () => {
       starts_at: "2026-06-01T18:00:00.000Z",
       ends_at: "2026-06-01T18:30:00.000Z",
       status: "requested",
+      lead_status: "new",
       notes: "Placement consult.",
     });
   });

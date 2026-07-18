@@ -67,6 +67,7 @@ describe("dashboard workspace", () => {
           staff_slug: "team-member-13",
           starts_at: "2026-06-01T18:00:00.000Z",
           status: "requested",
+          source: "website",
           lead_status: "contacted",
           internal_notes: "Called back and sent deposit info.",
           notes: "Chrome flames.",
@@ -89,5 +90,20 @@ describe("dashboard workspace", () => {
     });
 
     expect(inbox.map((lead) => lead.id)).toEqual([]);
+  });
+
+  it("shows only website inquiries in the inquiry panels", () => {
+    const inbox = buildDashboardLeadInbox({
+      session: ownerSession,
+      staffMembers,
+      services,
+      appointments: [
+        { id: "online", source: "website", customer_name: "Online lead", staff_slug: "team-member-13", starts_at: "2026-07-20T18:00:00.000Z", status: "requested" },
+        { id: "manual", source: "manual", customer_name: "Walk-in", staff_slug: "team-member-13", starts_at: "2026-07-20T19:00:00.000Z", status: "confirmed" },
+        { id: "booksy", source: "booksy", customer_name: "Imported", staff_slug: "team-member-13", starts_at: "2026-07-20T20:00:00.000Z", status: "confirmed" },
+      ],
+    });
+
+    expect(inbox.map((lead) => lead.id)).toEqual(["online"]);
   });
 });

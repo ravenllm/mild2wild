@@ -159,6 +159,32 @@ async function loadCalendarAppointments() {
   return mapped.length > 0 ? mapped : fallbackCalendarAppointments;
 }
 
+async function loadWebsiteInquiryAppointments() {
+  const supabase = createSupabaseServerClient();
+  if (!supabase) return [];
+
+  const pageSize = 1000;
+  const appointments: CalendarBoardAppointment[] = [];
+
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await supabase
+      .from("appointments")
+      .select("id, customer_name, customer_phone, customer_email, starts_at, ends_at, status, lead_status, source, notes, internal_notes, staff_members(slug, name, title, calendar_color), services(slug, name)")
+      .eq("source", "website")
+      .order("created_at", { ascending: false })
+      .range(from, from + pageSize - 1);
+
+    if (error) {
+      console.error("[booking-inquiries] Could not load website inquiries", { code: error.code, message: error.message });
+      return appointments;
+    }
+
+    const rows = (data ?? []) as AppointmentRelationRow[];
+    appointments.push(...rows.map(mapAppointmentRow).filter((row): row is CalendarBoardAppointment => Boolean(row)));
+    if (rows.length < pageSize) return appointments;
+  }
+}
+
 async function loadClientDirectory(sessionRole: string) {
   if (sessionRole !== "owner") return [];
   const supabase = createSupabaseServerClient();
@@ -456,9 +482,10 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     redirect("/login");
   }
 
-  const [mergedStaffMembers, calendarAppointments, clientDirectory] = await Promise.all([
+  const [mergedStaffMembers, calendarAppointments, websiteInquiryAppointments, clientDirectory] = await Promise.all([
     readStoredStaffMembers(staffMembers),
     loadCalendarAppointments(),
+    loadWebsiteInquiryAppointments(),
     loadClientDirectory(session.role),
   ]);
   const resolvedSearchParams = await searchParams;
@@ -471,7 +498,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     session,
     staffMembers: mergedStaffMembers,
     services,
-    appointments: calendarAppointments.map((appointment) => ({
+    appointments: websiteInquiryAppointments.map((appointment) => ({
       id: appointment.id,
       customer_name: appointment.clientName,
       customer_phone: appointment.clientPhone,
@@ -480,6 +507,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       staff_slug: appointment.staffSlug,
       starts_at: appointment.startsAt,
       status: appointment.status,
+      source: appointment.source,
       lead_status: appointment.leadStatus ?? (appointment.status === "requested" ? "new" : "contacted"),
       internal_notes: appointment.internalNotes,
       notes: appointment.notes,
