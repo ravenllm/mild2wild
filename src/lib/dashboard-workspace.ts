@@ -26,6 +26,7 @@ export type DashboardAppointmentRow = {
   staff_name?: string | null;
   starts_at?: string | null;
   status?: string | null;
+  source?: string | null;
   lead_status?: string | null;
   internal_notes?: string | null;
   notes?: string | null;
@@ -82,6 +83,7 @@ export function buildDashboardLeadInbox({
   const canSeeLead = (staffSlug: string | null) => session.role === "owner" || (!!staffSlug && staffSlug === session.staffSlug);
 
   const appointmentItems = appointments
+    .filter((row) => row.source === "website")
     .map((row): DashboardInboxItem => {
       const routedStaffSlug = row.staff_slug ?? null;
       const staff = routedStaffSlug ? staffMembers.find((item) => item.slug === routedStaffSlug) : undefined;

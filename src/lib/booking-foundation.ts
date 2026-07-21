@@ -215,6 +215,7 @@ export function buildAppointmentInsert(request: ValidatedBookingRequest, maps: I
     starts_at: request.startsAt,
     ends_at: request.endsAt,
     status: "requested" as const,
+    lead_status: "new" as const,
     notes: request.notes,
   };
 }
